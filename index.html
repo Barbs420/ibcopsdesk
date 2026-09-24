@@ -1,0 +1,2728 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IBC Ops Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Fraunces:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root{
+    --bg:#080b10;
+    --bg2:#0c1118;
+    --surface:#10161f;
+    --surface-alt:#141b26;
+    --border:#212a37;
+    --border-strong:#33404f;
+    --ink:#e8edf4;
+    --ink-muted:#8290a0;
+    --heading:#f4f8fb;
+    --accent:#2fd4e0;
+    --accent-dark:#1fb3c2;
+    --accent-glow:rgba(47,212,224,.28);
+    --accent-soft:rgba(47,212,224,.12);
+    --violet:#8f7bff;
+    --violet-soft:rgba(143,123,255,.14);
+    --green:#38d99a;
+    --green-soft:rgba(56,217,154,.14);
+    --amber:#f2b84b;
+    --amber-soft:rgba(242,184,75,.14);
+    --red:#ff6b6b;
+    --red-soft:rgba(255,107,107,.14);
+    --slate:#7c8ba0;
+    --slate-soft:rgba(124,139,160,.14);
+    --grid-line:rgba(255,255,255,.028);
+    --hover-tint:rgba(255,255,255,.02);
+    --card-shadow:0 12px 30px rgba(0,0,0,.35);
+    --radius:12px;
+    --sans:'Space Grotesk', -apple-system, sans-serif;
+    --mono:'IBM Plex Mono', 'SFMono-Regular', monospace;
+    --radius-sm:9px;
+    --radius-lg:20px;
+    --ease:cubic-bezier(.19,1,.22,1);
+    --accent-2:var(--violet);
+  }
+  html[data-theme="light"]{
+    --bg:#eef1f6;
+    --bg2:#ffffff;
+    --surface:#ffffff;
+    --surface-alt:#f3f5f9;
+    --border:#dde3ea;
+    --border-strong:#c2cad4;
+    --ink:#1c2530;
+    --ink-muted:#68727e;
+    --heading:#10151c;
+    --accent:#0891b2;
+    --accent-dark:#0e7490;
+    --accent-glow:rgba(8,145,178,.22);
+    --accent-soft:rgba(8,145,178,.10);
+    --violet:#7c5cff;
+    --violet-soft:rgba(124,92,255,.10);
+    --green:#189d6b;
+    --green-soft:rgba(24,157,107,.10);
+    --amber:#b3720a;
+    --amber-soft:rgba(179,114,10,.10);
+    --red:#d6394a;
+    --red-soft:rgba(214,57,74,.10);
+    --slate:#5c6875;
+    --slate-soft:rgba(92,104,117,.10);
+    --grid-line:rgba(15,23,32,.045);
+    --hover-tint:rgba(15,23,32,.035);
+    --card-shadow:0 10px 24px rgba(30,41,59,.08);
+  }
+  html[data-theme="glacier-ice"]{
+    --bg:#0c1420; --bg2:#0f1a29; --surface:#131f31; --surface-alt:#17253b;
+    --border:#243350; --border-strong:#374a6e; --ink:#dbe6f5; --ink-muted:#8298bd;
+    --heading:#f2f7ff; --accent:#5eb8ff; --accent-dark:#3a97e0;
+    --accent-glow:rgba(94,184,255,.28); --accent-soft:rgba(94,184,255,.12);
+    --violet:#a5b4fc; --violet-soft:rgba(165,180,252,.14);
+    --green:#6ee7c8; --green-soft:rgba(110,231,200,.14);
+    --amber:#f2c572; --amber-soft:rgba(242,197,114,.14);
+    --red:#ff8095; --red-soft:rgba(255,128,149,.14);
+    --slate:#8298bd; --slate-soft:rgba(130,152,189,.14);
+    --card-shadow:0 12px 30px rgba(0,0,0,.4);
+  }
+  html[data-theme="sakura-night"]{
+    --bg:#150c14; --bg2:#1a0f1a; --surface:#20131f; --surface-alt:#271725;
+    --border:#3a2138; --border-strong:#543050; --ink:#f2dfee; --ink-muted:#b28aa9;
+    --heading:#fff0fa; --accent:#ff7ab6; --accent-dark:#e35a98;
+    --accent-glow:rgba(255,122,182,.28); --accent-soft:rgba(255,122,182,.12);
+    --violet:#c299ff; --violet-soft:rgba(194,153,255,.14);
+    --green:#7fe0a8; --green-soft:rgba(127,224,168,.14);
+    --amber:#ffcb7d; --amber-soft:rgba(255,203,125,.14);
+    --red:#ff6b81; --red-soft:rgba(255,107,129,.14);
+    --slate:#b28aa9; --slate-soft:rgba(178,138,169,.14);
+    --card-shadow:0 12px 30px rgba(0,0,0,.45);
+  }
+  html[data-theme="deep-slate-pro"]{
+    --bg:#0a0e14; --bg2:#0d1219; --surface:#111722; --surface-alt:#151c28;
+    --border:#232c3a; --border-strong:#374355; --ink:#dbe3ee; --ink-muted:#7c8899;
+    --heading:#f2f6fb; --accent:#4f8cff; --accent-dark:#3a6fe0;
+    --accent-glow:rgba(79,140,255,.28); --accent-soft:rgba(79,140,255,.12);
+    --violet:#a78bfa; --violet-soft:rgba(167,139,250,.14);
+    --green:#34d399; --green-soft:rgba(52,211,153,.14);
+    --amber:#fbbf24; --amber-soft:rgba(251,191,36,.14);
+    --red:#f87171; --red-soft:rgba(248,113,113,.14);
+    --slate:#7c8899; --slate-soft:rgba(124,136,153,.14);
+    --card-shadow:0 12px 30px rgba(0,0,0,.35);
+  }
+  html[data-theme="linen-sage"]{
+    --bg:#f5f2ea; --bg2:#fdfbf6; --surface:#fdfbf6; --surface-alt:#efe9db;
+    --border:#e0d8c5; --border-strong:#c7bb9e; --ink:#33352c; --ink-muted:#75786a;
+    --heading:#20221b; --accent:#5f8f6e; --accent-dark:#4a7259;
+    --accent-glow:rgba(95,143,110,.2); --accent-soft:rgba(95,143,110,.1);
+    --violet:#8577b0; --violet-soft:rgba(133,119,176,.1);
+    --green:#5f8f6e; --green-soft:rgba(95,143,110,.1);
+    --amber:#c0932f; --amber-soft:rgba(192,147,47,.1);
+    --red:#bd5a49; --red-soft:rgba(189,90,73,.1);
+    --slate:#75786a; --slate-soft:rgba(117,120,106,.1);
+    --grid-line:rgba(32,34,27,.05); --hover-tint:rgba(32,34,27,.035);
+    --card-shadow:0 10px 24px rgba(40,40,25,.08);
+  }
+  html[data-theme="arctic-blueprint"]{
+    --bg:#eef3f8; --bg2:#ffffff; --surface:#ffffff; --surface-alt:#e8eef5;
+    --border:#cddbe8; --border-strong:#a9c0d6; --ink:#1e2b3a; --ink-muted:#5b7086;
+    --heading:#0f1c2b; --accent:#1c6fd9; --accent-dark:#1558ad;
+    --accent-glow:rgba(28,111,217,.2); --accent-soft:rgba(28,111,217,.1);
+    --violet:#5b6fd9; --violet-soft:rgba(91,111,217,.1);
+    --green:#1f9e73; --green-soft:rgba(31,158,115,.1);
+    --amber:#c0791a; --amber-soft:rgba(192,121,26,.1);
+    --red:#c23b3b; --red-soft:rgba(194,59,59,.1);
+    --slate:#5b7086; --slate-soft:rgba(91,112,134,.1);
+    --grid-line:rgba(15,40,70,.05); --hover-tint:rgba(15,40,70,.035);
+    --card-shadow:0 10px 24px rgba(30,50,70,.08);
+  }
+  html[data-theme="emerald-dusk"]{
+    --bg:#06120e; --bg2:#081712; --surface:#0c1e18; --surface-alt:#10261e;
+    --border:#1c392e; --border-strong:#2b5745; --ink:#d3ede1; --ink-muted:#79a596;
+    --heading:#eafff5; --accent:#2de8ab; --accent-dark:#1fc491;
+    --accent-glow:rgba(45,232,171,.28); --accent-soft:rgba(45,232,171,.12);
+    --violet:#8fb2ff; --violet-soft:rgba(143,178,255,.14);
+    --green:#2de8ab; --green-soft:rgba(45,232,171,.14);
+    --amber:#f2cf6b; --amber-soft:rgba(242,207,107,.14);
+    --red:#ff7a6b; --red-soft:rgba(255,122,107,.14);
+    --slate:#79a596; --slate-soft:rgba(121,165,150,.14);
+    --card-shadow:0 12px 30px rgba(0,0,0,.4);
+  }
+  html[data-theme="deep-ocean-teal"]{
+    --bg:#061418; --bg2:#08191e; --surface:#0b2026; --surface-alt:#0f272e;
+    --border:#1c3a41; --border-strong:#2c545c; --ink:#d3ecef; --ink-muted:#6f9aa3;
+    --heading:#eafcff; --accent:#2bc7c7; --accent-dark:#1fa3a3;
+    --accent-glow:rgba(43,199,199,.28); --accent-soft:rgba(43,199,199,.12);
+    --violet:#5ec8ff; --violet-soft:rgba(94,200,255,.14);
+    --green:#3fd992; --green-soft:rgba(63,217,146,.14);
+    --amber:#f2b84b; --amber-soft:rgba(242,184,75,.14);
+    --red:#ff6b6b; --red-soft:rgba(255,107,107,.14);
+    --slate:#6f9aa3; --slate-soft:rgba(111,154,163,.14);
+    --card-shadow:0 12px 30px rgba(0,0,0,.35);
+  }
+  html[data-theme="solarized-dusk"]{
+    --bg:#00262e; --bg2:#073642; --surface:#0b3b46; --surface-alt:#0e4350;
+    --border:#155263; --border-strong:#1b6479; --ink:#93a1a1; --ink-muted:#719098;
+    --heading:#eee8d5; --accent:#2aa198; --accent-dark:#1f7a73;
+    --accent-glow:rgba(42,161,152,.28); --accent-soft:rgba(42,161,152,.12);
+    --violet:#6c71c4; --violet-soft:rgba(108,113,196,.14);
+    --green:#859900; --green-soft:rgba(133,153,0,.14);
+    --amber:#b58900; --amber-soft:rgba(181,137,0,.14);
+    --red:#dc322f; --red-soft:rgba(220,50,47,.14);
+    --slate:#719098; --slate-soft:rgba(113,144,152,.14);
+    --card-shadow:0 12px 30px rgba(0,0,0,.35);
+  }
+  html[data-theme="graphite-copper"]{
+    --bg:#151313; --bg2:#191716; --surface:#1e1b1a; --surface-alt:#242020;
+    --border:#332c29; --border-strong:#4a3f3a; --ink:#e6ddd5; --ink-muted:#9c8f85;
+    --heading:#f5efe9; --accent:#c97a4a; --accent-dark:#a8613a;
+    --accent-glow:rgba(201,122,74,.28); --accent-soft:rgba(201,122,74,.12);
+    --violet:#8f7bff; --violet-soft:rgba(143,123,255,.14);
+    --green:#7bab6e; --green-soft:rgba(123,171,110,.14);
+    --amber:#d9a441; --amber-soft:rgba(217,164,65,.14);
+    --red:#c4574a; --red-soft:rgba(196,87,74,.14);
+    --slate:#9c8f85; --slate-soft:rgba(156,143,133,.14);
+    --card-shadow:0 12px 30px rgba(0,0,0,.4);
+  }
+  html[data-theme="vapor-grid"]{
+    --bg:#0b0714; --bg2:#0f0a1c; --surface:#161027; --surface-alt:#1c1533;
+    --border:#2e2350; --border-strong:#453472; --ink:#e6defc; --ink-muted:#9081b8;
+    --heading:#f6f0ff; --accent:#ff5fd2; --accent-dark:#e043ba;
+    --accent-glow:rgba(255,95,210,.28); --accent-soft:rgba(255,95,210,.12);
+    --violet:#8f7bff; --violet-soft:rgba(143,123,255,.14);
+    --green:#3ce6b0; --green-soft:rgba(60,230,176,.14);
+    --amber:#ffcc4d; --amber-soft:rgba(255,204,77,.14);
+    --red:#ff5f7a; --red-soft:rgba(255,95,122,.14);
+    --slate:#9081b8; --slate-soft:rgba(144,129,184,.14);
+    --card-shadow:0 12px 34px rgba(0,0,0,.45);
+    --mono:'JetBrains Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  ::selection{background:var(--accent); color:var(--bg);}
+  *:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px;}
+  html{scrollbar-color:var(--border-strong) transparent;}
+  ::-webkit-scrollbar{width:10px; height:10px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:var(--border-strong); border-radius:20px; border:2px solid transparent; background-clip:padding-box;}
+  ::-webkit-scrollbar-thumb:hover{background:var(--ink-muted); background-clip:padding-box;}
+
+  body{
+    margin:0;
+    background:var(--bg);
+    font-family:var(--sans);
+    color:var(--ink);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    transition:background-color .2s, color .2s;
+    overflow-x:hidden;
+  }
+
+  .bg-parallax{position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none;}
+  .bg-canvas{position:absolute; inset:0; width:100%; height:100%; display:block;}
+
+  @keyframes riseIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
+  .wrap{max-width:1180px; margin:0 auto; padding:40px 22px 100px; animation:riseIn .5s var(--ease) both; position:relative; z-index:1;}
+
+  .theme-select{
+    font-family:var(--mono); font-size:12px; font-weight:600; color:var(--ink);
+    background:var(--surface); border:1px solid var(--border); border-radius:999px;
+    padding:9px 32px 9px 16px; cursor:pointer; appearance:none; -webkit-appearance:none;
+    background-image:linear-gradient(45deg, transparent 50%, var(--ink-muted) 50%), linear-gradient(135deg, var(--ink-muted) 50%, transparent 50%);
+    background-position:calc(100% - 17px) 52%, calc(100% - 12px) 52%;
+    background-size:5px 5px, 5px 5px; background-repeat:no-repeat;
+    box-shadow:0 1px 0 var(--hover-tint) inset;
+    transition:border-color .15s var(--ease), box-shadow .15s var(--ease), transform .1s var(--ease);
+  }
+  .theme-select:hover{border-color:var(--border-strong); transform:translateY(-1px);}
+  .theme-select:focus{outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft);}
+  .header-actions{display:flex; flex-direction:column; align-items:flex-end; gap:10px;}
+  .header-actions-row{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end;}
+  .live-clock{
+    font-family:var(--mono); text-align:right; background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; padding:8px 16px; display:flex; flex-direction:column; gap:1px; align-items:flex-end;
+    box-shadow:0 1px 0 var(--hover-tint) inset;
+  }
+  .live-clock-time{font-size:18px; font-weight:700; color:var(--heading); letter-spacing:.03em; font-variant-numeric:tabular-nums; text-shadow:0 0 12px var(--accent-glow);}
+  .live-clock-date{font-size:11px; color:var(--ink-muted); letter-spacing:.03em;}
+
+  header.top{display:flex; align-items:flex-end; justify-content:space-between; gap:20px; margin-bottom:26px; flex-wrap:wrap; padding-bottom:26px; border-bottom:1px solid var(--border);}
+  .brand-row{display:flex; align-items:center; gap:12px; margin-bottom:14px;}
+  .brand-mark{
+    width:34px; height:34px; border-radius:10px; flex-shrink:0;
+    background:linear-gradient(135deg, var(--accent), var(--violet));
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 4px 16px var(--accent-glow), 0 1px 0 rgba(255,255,255,.25) inset;
+  }
+  .brand-mark svg{width:18px; height:18px; display:block;}
+  .brand-eyebrow{font-family:var(--mono); font-size:12.5px; letter-spacing:.03em; color:var(--ink-muted); font-weight:600; margin:0;}
+  .brand-eyebrow b{color:var(--heading); font-weight:700;}
+  h1{font-size:32px; margin:0; font-weight:700; letter-spacing:-.02em; color:var(--heading); line-height:1.15;}
+  .sub{color:var(--ink-muted); font-size:14px; margin-top:9px; max-width:580px; line-height:1.6;}
+  .owner-credit{display:inline-flex; align-items:center; gap:6px; color:var(--ink-muted); font-size:11.5px; font-family:var(--mono); margin-top:14px; letter-spacing:.02em;}
+  .owner-credit::before{content:""; width:6px; height:6px; border-radius:50%; background:var(--accent); box-shadow:0 0 8px var(--accent-glow);}
+  .cell-count{
+    font-family:var(--mono); font-size:12px; color:var(--ink-muted); background:var(--surface);
+    border:1px solid var(--border); padding:8px 14px 8px 12px; border-radius:999px; white-space:nowrap;
+    display:inline-flex; align-items:center; gap:8px; box-shadow:0 1px 0 var(--hover-tint) inset;
+  }
+  .cell-count::before{content:""; width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green-soft); flex-shrink:0;}
+
+  /* ---------- tabs ---------- */
+  .tabbar{
+    display:inline-flex; gap:4px; margin-bottom:30px; padding:5px;
+    background:var(--surface-alt); border:1px solid var(--border); border-radius:999px;
+    box-shadow:0 1px 0 var(--hover-tint) inset;
+  }
+  .tab-btn{
+    font-family:var(--sans); font-size:13.5px; font-weight:600; color:var(--ink-muted);
+    background:transparent; border:none; border-radius:999px;
+    padding:10px 18px; cursor:pointer; display:flex; align-items:center; gap:9px;
+    transition:color .15s var(--ease), background .18s var(--ease);
+  }
+  .tab-btn + .tab-btn{margin-left:0;}
+  .tab-btn .tab-dot{width:6px; height:6px; border-radius:50%; background:var(--border-strong); flex-shrink:0; transition:background .15s, box-shadow .15s;}
+  .tab-btn:hover{color:var(--ink);}
+  .tab-btn.active{color:var(--heading); background:var(--surface); box-shadow:0 4px 14px rgba(0,0,0,.18), 0 1px 0 var(--hover-tint) inset;}
+  .tab-btn.active .tab-dot{background:var(--accent); box-shadow:0 0 8px var(--accent-glow);}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block; animation:riseIn .4s var(--ease) both;}
+
+  .card{
+    background:linear-gradient(180deg, var(--surface), var(--bg2)); border:1px solid var(--border);
+    border-radius:var(--radius-lg); padding:26px; margin-bottom:24px;
+    box-shadow:0 1px 0 var(--hover-tint) inset, var(--card-shadow);
+  }
+  .card-head{display:flex; align-items:center; gap:12px; margin-bottom:20px;}
+  .step-num{
+    font-family:var(--mono); font-size:12px; font-weight:700; color:var(--bg);
+    background:linear-gradient(135deg, var(--accent), var(--violet));
+    box-shadow:0 4px 14px var(--accent-glow); border-radius:8px; width:26px; height:26px;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .card-head h2{font-size:15.5px; margin:0; font-weight:600; color:var(--heading); letter-spacing:-.005em;}
+  .card-head .hint{font-size:12.5px; color:var(--ink-muted); margin-left:auto; text-align:right;}
+
+  #dropzone, .dropzone{
+    border:1.5px dashed var(--border-strong); border-radius:var(--radius); padding:32px 16px;
+    text-align:center; background:var(--bg2); cursor:pointer;
+    transition:border-color .18s var(--ease), background .18s var(--ease), transform .12s var(--ease);
+  }
+  #dropzone:hover, .dropzone:hover{transform:translateY(-1px);}
+  #dropzone:hover, #dropzone.drag, .dropzone:hover, .dropzone.drag{border-color:var(--accent); background:var(--accent-soft); box-shadow:0 0 26px var(--accent-glow) inset;}
+  #dropzone .icon, .dropzone .icon{font-size:22px; margin-bottom:6px; color:var(--accent); display:inline-block; transition:transform .18s var(--ease);}
+  #dropzone:hover .icon, .dropzone:hover .icon{transform:translateY(-2px);}
+  #dropzone .main-txt, .dropzone .main-txt{font-size:13.5px; font-weight:600; color:var(--heading);}
+  #dropzone .sub-txt, .dropzone .sub-txt{font-size:12px; color:var(--ink-muted); margin-top:4px;}
+  #fileName, .file-name{font-family:var(--mono); font-size:12px; color:var(--accent); margin-top:8px;}
+
+  .btn{
+    font-family:var(--sans); font-size:13.5px; font-weight:600; cursor:pointer;
+    border-radius:var(--radius-sm); padding:10px 18px; border:1px solid transparent;
+    display:inline-flex; align-items:center; gap:8px;
+    transition:transform .12s var(--ease), background .15s var(--ease), box-shadow .15s var(--ease), border-color .15s var(--ease);
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-primary{
+    background:linear-gradient(135deg, var(--accent), var(--accent-dark)); color:#04151a;
+    box-shadow:0 6px 20px var(--accent-glow), 0 1px 0 rgba(255,255,255,.2) inset;
+  }
+  .btn-primary:hover{transform:translateY(-1px); box-shadow:0 10px 26px var(--accent-glow), 0 1px 0 rgba(255,255,255,.25) inset;}
+  .btn-primary:disabled{background:#37424f; color:#6b7684; box-shadow:none; cursor:not-allowed; transform:none;}
+  .btn-ghost{background:var(--surface-alt); color:var(--ink); border-color:var(--border);}
+  .btn-ghost:hover{border-color:var(--border-strong); color:var(--heading); transform:translateY(-1px);}
+  .btn-danger-ghost{background:var(--surface-alt); color:var(--red); border-color:var(--border);}
+  .btn-danger-ghost:hover{border-color:rgba(255,107,107,.5); background:var(--red-soft); transform:translateY(-1px);}
+  .btn-sm{padding:7px 12px; font-size:12px; border-radius:7px;}
+  .btn-icon{padding:7px 9px; font-size:12px; border-radius:7px; line-height:1;}
+  .row-actions{display:flex; gap:10px; margin-top:18px; align-items:center; flex-wrap:wrap;}
+
+  .map-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:14px; margin-bottom:6px;}
+  .map-field label{display:block; font-size:11.5px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-muted); margin-bottom:7px;}
+  select, input[type="text"]{
+    width:100%; padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--border);
+    font-family:var(--mono); font-size:12.5px; background:var(--bg2); color:var(--ink);
+    transition:border-color .15s var(--ease), box-shadow .15s var(--ease);
+  }
+  select:focus, input[type="text"]:focus{outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft);}
+  input[type="text"]::placeholder{color:#4c5867;}
+
+  .msg{font-size:12.5px; padding:11px 14px 11px 16px; border-radius:var(--radius-sm); margin-top:12px; display:none; border-left:3px solid transparent;}
+  .msg.show{display:block;}
+  .msg.warn{background:var(--amber-soft); color:var(--amber); border-color:var(--amber);}
+  .msg.err{background:var(--red-soft); color:var(--red); border-color:var(--red);}
+  .msg.ok{background:var(--green-soft); color:var(--green); border-color:var(--green);}
+
+  details.grid-preview{margin-top:10px;}
+  details.grid-preview summary{cursor:pointer; font-size:12.5px; font-weight:600; color:var(--accent); padding:6px 0; list-style:none;}
+  details.grid-preview summary::-webkit-details-marker{display:none;}
+  details.grid-preview summary::before{content:"▸ "; display:inline-block; transition:transform .15s var(--ease);}
+  details.grid-preview[open] summary::before{transform:rotate(90deg);}
+  .grid-scroll{overflow:auto; max-height:340px; border:1px solid var(--border); border-radius:var(--radius); margin-top:8px;}
+  table.xgrid{border-collapse:collapse; font-family:var(--mono); font-size:11.5px; width:max-content; min-width:100%;}
+  table.xgrid th, table.xgrid td{border:1px solid var(--border); padding:5px 9px; white-space:nowrap; color:var(--ink);}
+  table.xgrid thead tr.colletters th{background:var(--surface-alt); color:var(--ink-muted); font-weight:600; position:sticky; top:0; z-index:2;}
+  table.xgrid thead tr.headerrow th{background:var(--surface); font-weight:700; position:sticky; top:23px; z-index:2; color:var(--heading);}
+  table.xgrid td.rownum, table.xgrid th.rownum{position:sticky; left:0; background:var(--surface-alt); color:var(--ink-muted); font-weight:600; z-index:1; text-align:right;}
+  table.xgrid td.mapped{background:var(--accent-soft);}
+  /* status-color row highlighting — Manual mode only */
+  table.xgrid tr.hl-active td:not(.rownum){background:var(--green-soft) !important;}
+  table.xgrid tr.hl-flagged td:not(.rownum){background:var(--amber-soft) !important;}
+  table.xgrid tr.hl-loggedout td:not(.rownum){background:var(--slate-soft) !important;}
+  table.xgrid tr.hl-payment td:not(.rownum){background:var(--violet-soft) !important;}
+  table.xgrid tr.hl-rejected td:not(.rownum){background:var(--red-soft) !important;}
+  table.xgrid tr.hl-trafficalt td:not(.rownum){background:var(--accent-soft) !important;}
+
+  .legend-row{display:flex; flex-wrap:wrap; gap:12px; margin-top:10px;}
+  .legend-item{display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--ink-muted); font-family:var(--mono);}
+  .legend-swatch{width:10px; height:10px; border-radius:3px; flex-shrink:0;}
+  .legend-swatch.active{background:var(--green);} .legend-swatch.flagged{background:var(--amber);}
+  .legend-swatch.loggedout{background:var(--slate);} .legend-swatch.payment{background:var(--violet);}
+  .legend-swatch.rejected{background:var(--red);} .legend-swatch.trafficalt{background:var(--accent);}
+
+  .section-title{display:flex; align-items:baseline; gap:10px; margin:40px 0 16px; flex-wrap:wrap;}
+  .section-title h2{font-size:18px; margin:0; font-weight:700; color:var(--heading); letter-spacing:-.01em;}
+  .section-title .tag{font-family:var(--mono); font-size:11px; color:var(--ink-muted); background:var(--surface-alt); border:1px solid var(--border); padding:4px 11px; border-radius:999px;}
+
+  .results-grid{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  @media(max-width:760px){.results-grid{grid-template-columns:1fr;}}
+  .result-card{
+    background:linear-gradient(180deg, var(--surface), var(--bg2)); border:1px solid var(--border);
+    border-radius:var(--radius-lg); overflow:hidden; box-shadow:0 1px 0 var(--hover-tint) inset, var(--card-shadow);
+  }
+  .result-card .rc-head{padding:16px 20px; border-bottom:1px solid var(--border); background:var(--surface-alt);}
+  .result-card .rc-head .code{font-family:var(--mono); font-weight:700; font-size:13.5px; color:var(--accent); text-shadow:0 0 12px var(--accent-glow);}
+  .result-card .rc-head .count{font-size:11.5px; color:var(--ink-muted); margin-top:3px;}
+  table.res{width:100%; border-collapse:collapse; font-size:13.5px;}
+  table.res td, table.res th{padding:12px 20px; text-align:left;}
+  table.res thead th{font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-muted); font-weight:600; border-bottom:1px solid var(--border);}
+  table.res tbody tr:not(:last-child) td{border-bottom:1px solid var(--border);}
+  table.res tbody tr:hover td{background:var(--hover-tint);}
+  table.res td.num{font-family:var(--mono); font-weight:700; text-align:right; font-size:14.5px; color:var(--heading);}
+  table.res td.label{display:flex; align-items:center; gap:9px; color:var(--ink);}
+  table.res tfoot td{padding:12px 20px; border-top:2px solid var(--border-strong); font-weight:700; color:var(--heading); background:var(--hover-tint);}
+  table.res tfoot td.num{font-family:var(--mono); text-align:right; font-size:14.5px;}
+  .dot{width:8px; height:8px; border-radius:50%; flex-shrink:0; box-shadow:0 0 8px currentColor;}
+  .dot.active{background:var(--green); color:var(--green);} .dot.rejected{background:var(--red); color:var(--red);} .dot.flagged{background:var(--amber); color:var(--amber);}
+  .dot.loggedout{background:var(--slate); color:var(--slate);} .dot.payment{background:var(--violet); color:var(--violet);} .dot.review{background:var(--accent); color:var(--accent);}
+  .dot.budget{background:var(--green); color:var(--green);} .dot.traffic{background:var(--red); color:var(--red);}
+  .dot.trafficalt{background:var(--accent); color:var(--accent);}
+
+  @keyframes flash{0%{background:var(--accent-soft); box-shadow:0 0 20px var(--accent-glow) inset;} 100%{background:transparent; box-shadow:none;}}
+  .flash{animation:flash 1.2s ease-out;}
+
+  .footnote{font-size:12px; color:var(--ink-muted); margin-top:12px; line-height:1.6;}
+  .footnote code{font-family:var(--mono); background:var(--surface-alt); padding:1px 5px; border-radius:4px; color:var(--accent);}
+  .download-row{display:flex; justify-content:flex-end; gap:10px; margin-top:18px;}
+  .report-preview{
+    font-family:var(--mono); font-size:12.5px; line-height:1.7; color:var(--ink);
+    background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px 18px; margin:14px 0 0; white-space:pre-wrap; word-break:break-word;
+    tab-size:4;
+  }
+
+  /* ---------- filters (manual mode) ---------- */
+  .filter-block{margin-bottom:20px;}
+  .filter-block:last-of-type{margin-bottom:6px;}
+  .filter-label{display:block; font-size:11.5px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-muted); margin-bottom:9px;}
+  .pill-row{display:flex; flex-wrap:wrap; gap:8px;}
+  .pill{
+    font-family:var(--mono); font-size:12px; font-weight:600; padding:8px 14px; border-radius:999px;
+    border:1px solid var(--border); background:var(--bg2); color:var(--ink-muted); cursor:pointer;
+    transition:border-color .15s var(--ease), background .15s var(--ease), color .15s var(--ease), box-shadow .15s var(--ease), transform .1s var(--ease);
+    user-select:none; display:inline-flex; align-items:center; gap:7px;
+  }
+  .pill:hover{border-color:var(--border-strong); color:var(--ink); transform:translateY(-1px);}
+  .pill.active{border-color:var(--accent); background:var(--accent-soft); color:var(--accent); box-shadow:0 0 12px var(--accent-glow) inset;}
+  .pill .dot{box-shadow:none;}
+  .segmented{display:inline-flex; border:1px solid var(--border); border-radius:999px; overflow:hidden; padding:3px; background:var(--bg2);}
+  .seg-btn{
+    font-family:var(--sans); font-size:12.5px; font-weight:600; padding:9px 18px; background:transparent;
+    border-radius:999px; color:var(--ink-muted); border:none; cursor:pointer; transition:background .18s var(--ease), color .18s var(--ease);
+  }
+  .seg-btn + .seg-btn{border-left:none;}
+  .seg-btn.active{background:linear-gradient(135deg, var(--accent), var(--accent-dark)); color:#04151a; box-shadow:0 4px 12px var(--accent-glow);}
+  .seg-btn:hover:not(.active){color:var(--ink);}
+
+  /* ---------- LP grouping specific (light, tinted per bucket) ---------- */
+  .lp-bucket-section{margin-bottom:28px;}
+  .lp-bucket-head{
+    display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+    padding:15px 20px; border-radius:var(--radius-lg) var(--radius-lg) 0 0; border:1px solid var(--border); border-bottom:none;
+  }
+  .lp-bucket-head .code{font-family:var(--sans); font-weight:700; font-size:14.5px; letter-spacing:-.005em;}
+  .lp-bucket-head .count{font-family:var(--mono); font-size:11.5px; color:var(--ink-muted); margin-left:auto;}
+  .lp-bucket-head.tone-MYE{background:var(--accent-soft);} .lp-bucket-head.tone-MYE .code{color:var(--accent);}
+  .lp-bucket-head.tone-MYC{background:var(--violet-soft);} .lp-bucket-head.tone-MYC .code{color:var(--violet);}
+  .lp-bucket-head.tone-SGE{background:var(--green-soft);} .lp-bucket-head.tone-SGE .code{color:var(--green);}
+  .lp-bucket-head.tone-SGC{background:var(--amber-soft);} .lp-bucket-head.tone-SGC .code{color:var(--amber);}
+  .lp-bucket-badge{display:inline-block; font-family:var(--mono); font-size:11px; font-weight:700; padding:3px 9px; border-radius:999px;}
+  .lp-bucket-badge.tone-MYE{background:var(--accent-soft); color:var(--accent);}
+  .lp-bucket-badge.tone-MYC{background:var(--violet-soft); color:var(--violet);}
+  .lp-bucket-badge.tone-SGE{background:var(--green-soft); color:var(--green);}
+  .lp-bucket-badge.tone-SGC{background:var(--amber-soft); color:var(--amber);}
+
+  .lp-table-scroll{overflow-x:auto; border-radius:0 0 var(--radius-lg) var(--radius-lg);}
+  table.lp-flat{
+    width:100%; min-width:720px; border-collapse:collapse; font-size:12.5px;
+    border:1px solid var(--border); border-radius:0 0 var(--radius-lg) var(--radius-lg); overflow:hidden; background:var(--bg2);
+  }
+  table.lp-flat th, table.lp-flat td{padding:11px 18px; text-align:left; border-bottom:1px solid var(--border); white-space:nowrap;}
+  table.lp-flat th{font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-muted); font-weight:600; background:var(--surface-alt);}
+  table.lp-flat td{font-family:var(--mono); color:var(--ink);}
+  table.lp-flat tbody tr:last-child td{border-bottom:none;}
+  table.lp-flat tbody tr:hover td{background:var(--hover-tint);}
+
+  table.lp-flat th.lp-check-cell, table.lp-flat td.lp-check-cell{width:1%; padding-right:6px;}
+  .lp-row-check{width:15px; height:15px; accent-color:var(--accent); cursor:pointer;}
+  .cell-copy-wrap{display:flex; align-items:center; gap:8px;}
+  .cell-copy-wrap .cell-text{overflow:hidden; text-overflow:ellipsis;}
+  .cell-copy-btn{padding:3px 6px; font-size:10px; flex-shrink:0;}
+  table.lp-flat tbody tr.lp-row-done td:not(.lp-check-cell){opacity:.45;}
+  table.lp-flat tbody tr.lp-row-done .cell-text{text-decoration:line-through;}
+
+  /* ---------- URI generator specific ---------- */
+  .uri-empty{
+    border:1.5px dashed var(--border-strong); border-radius:var(--radius); padding:36px 16px;
+    text-align:center; color:var(--ink-muted); font-size:13px; background:var(--bg2);
+  }
+  .uri-empty .icon{font-size:20px; margin-bottom:6px; color:var(--slate);}
+  .uri-list{display:flex; flex-direction:column; gap:12px;}
+  .uri-card{
+    background:linear-gradient(180deg, var(--surface), var(--bg2)); border:1px solid var(--border);
+    border-radius:var(--radius-lg); padding:18px 20px; box-shadow:0 1px 0 var(--hover-tint) inset, 0 10px 22px rgba(0,0,0,.28);
+  }
+  .uri-card-top{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px;}
+  .uri-card-src{font-family:var(--mono); font-size:11px; color:var(--ink-muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .uri-card-src b{color:var(--ink); font-weight:600;}
+  .uri-rows{display:flex; flex-direction:column; gap:8px;}
+  .uri-row{
+    display:flex; align-items:center; gap:10px; background:var(--bg2); border:1px solid var(--border);
+    border-radius:var(--radius-sm); padding:10px 11px;
+  }
+  .uri-row .uri-tag{
+    font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+    color:var(--bg); background:var(--accent); border-radius:5px; padding:3px 7px; flex-shrink:0;
+  }
+  .uri-row.safe .uri-tag{background:var(--violet); color:#100b28;}
+  .uri-row .uri-val{
+    font-family:var(--mono); font-size:12.5px; color:var(--ink); overflow-x:auto; white-space:nowrap;
+    flex:1; scrollbar-width:thin;
+  }
+  .copy-btn{
+    font-family:var(--mono); font-size:11px; font-weight:600; color:var(--ink-muted);
+    background:var(--surface-alt); border:1px solid var(--border); border-radius:6px;
+    padding:5px 9px; cursor:pointer; flex-shrink:0; transition:color .15s var(--ease), border-color .15s var(--ease), background .15s var(--ease), transform .1s var(--ease);
+  }
+  .copy-btn:hover{color:var(--accent); border-color:var(--accent); background:var(--accent-soft); transform:translateY(-1px);}
+  .copy-btn.copied{color:var(--green); border-color:rgba(56,217,154,.4); background:var(--green-soft);}
+
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important;}
+  }
+</style>
+
+</head>
+<body>
+<div class="bg-parallax" aria-hidden="true">
+  <canvas class="bg-canvas" id="bgCanvas"></canvas>
+</div>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <div class="brand-row">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 12L10 18L20 6" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <p class="brand-eyebrow"><b>IBC</b> Ops Desk</p>
+      </div>
+      <h1 id="pageTitle">Status counter</h1>
+      <p class="sub" id="pageSub">Upload your tracking sheet. Choose Automatic for the one-click IBC22MY / IBC22SG report, or Manual to toggle buckets, statuses, a date, and count/sum yourself.</p>
+      <p class="owner-credit">Owned by Barbs</p>
+    </div>
+    <div class="header-actions">
+      <div class="live-clock" id="liveClock">
+        <span class="live-clock-time" id="liveClockTime">--:--:-- --</span>
+        <span class="live-clock-date" id="liveClockDate">—</span>
+      </div>
+      <div class="header-actions-row">
+        <select class="theme-select" id="themeSelect" title="Choose a theme" aria-label="Choose a theme">
+          <optgroup label="Original">
+            <option value="light">Original — Light</option>
+            <option value="dark" selected>Original — Dark</option>
+          </optgroup>
+          <optgroup label="Themes">
+            <option value="glacier-ice">Glacier Ice</option>
+            <option value="sakura-night">Sakura Night</option>
+            <option value="deep-slate-pro">Deep Slate Pro</option>
+            <option value="linen-sage">Linen Sage</option>
+            <option value="arctic-blueprint">Arctic Blueprint</option>
+            <option value="emerald-dusk">Emerald Dusk</option>
+            <option value="deep-ocean-teal">Deep Ocean Teal</option>
+            <option value="solarized-dusk">Solarized Dusk</option>
+            <option value="graphite-copper">Graphite &amp; Copper</option>
+            <option value="vapor-grid">Vapor Grid</option>
+          </optgroup>
+        </select>
+        <div class="cell-count" id="cellCount">no data loaded</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="tabbar" role="tablist">
+    <button class="tab-btn active" id="tabBtnStatus" data-tab="status" role="tab" aria-selected="true">
+      <span class="tab-dot"></span> Status counter
+    </button>
+    <button class="tab-btn" id="tabBtnLp" data-tab="lp" role="tab" aria-selected="false">
+      <span class="tab-dot"></span> Backend
+    </button>
+    <button class="tab-btn" id="tabBtnUri" data-tab="uri" role="tab" aria-selected="false">
+      <span class="tab-dot"></span> URI path generator
+    </button>
+  </div>
+
+  <!-- =================== TAB 1: STATUS COUNTER =================== -->
+  <div class="tab-panel active" id="tab-status">
+
+    <!-- STEP 1: INPUT -->
+    <div class="card">
+      <div class="card-head">
+        <div class="step-num">1</div>
+        <h2>Load your sheet</h2>
+        <div class="hint">Upload .xlsx, .xls, or .csv</div>
+      </div>
+
+      <div id="dropzone">
+        <div class="icon">⭱</div>
+        <div class="main-txt">Drop your Excel file here, or click to browse</div>
+        <div class="sub-txt">.xlsx, .xls, or .csv — first sheet is used</div>
+        <div id="fileName"></div>
+      </div>
+      <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display:none;">
+
+      <div class="msg" id="loadMsg"></div>
+    </div>
+
+    <!-- STEP 2: MAPPING + MODE -->
+    <div class="card" id="mapCard" style="display:none;">
+      <div class="card-head">
+        <div class="step-num">2</div>
+        <h2>Confirm your columns</h2>
+        <div class="hint">Auto-detected — adjust if anything's off</div>
+      </div>
+      <div class="map-grid">
+        <div class="map-field">
+          <label>Login Code column</label>
+          <select id="colLogin"></select>
+        </div>
+        <div class="map-field">
+          <label>Status column</label>
+          <select id="colStatus"></select>
+        </div>
+        <div class="map-field">
+          <label>Launched Date column</label>
+          <select id="colDate"></select>
+        </div>
+        <div class="map-field">
+          <label>Value column (to sum)</label>
+          <select id="colAmount"></select>
+        </div>
+      </div>
+
+      <div class="filter-block">
+        <label class="filter-label">Processing mode</label>
+        <div class="segmented" id="modeSegmented">
+          <button type="button" class="seg-btn active" data-mode="automatic">Automatic</button>
+          <button type="button" class="seg-btn" data-mode="manual">Manual</button>
+        </div>
+        <p class="footnote" id="modeHint">Automatic: one click calculates yesterday's launch counts and all-time budget sums for IBC22MY and IBC22SG. Manual: toggle MYE / MYC / SGE / SGC buckets, statuses, a date, and count/sum yourself.</p>
+      </div>
+
+      <div class="row-actions">
+        <button class="btn btn-primary" id="calcBtn">Calculate results</button>
+        <button class="btn btn-ghost" id="resetBtn">Start over</button>
+      </div>
+      <div class="msg" id="mapMsg"></div>
+
+      <details class="grid-preview" id="gridPreviewDetails">
+        <summary id="gridPreviewSummary">View imported data as a grid</summary>
+        <div class="grid-scroll"><table class="xgrid" id="xgrid"></table></div>
+        <div class="legend-row" id="gridLegend" style="display:none;">
+          <span class="legend-item"><span class="legend-swatch active"></span>Active</span>
+          <span class="legend-item"><span class="legend-swatch flagged"></span>Flagged</span>
+          <span class="legend-item"><span class="legend-swatch loggedout"></span>Logged Out</span>
+          <span class="legend-item"><span class="legend-swatch payment"></span>Payment Issue</span>
+          <span class="legend-item"><span class="legend-swatch rejected"></span>Rejected</span>
+          <span class="legend-item"><span class="legend-swatch trafficalt"></span>Traffic Restricted / In Review</span>
+        </div>
+        <p class="footnote" id="gridLegendNote" style="display:none;">Rows are highlighted by their status color (Manual mode only), but only for statuses currently toggled on below.</p>
+      </details>
+    </div>
+
+    <!-- AUTOMATIC RESULTS -->
+    <div id="resultsWrap" style="display:none;">
+
+      <div class="section-title">
+        <h2>Yesterday launches (count)</h2>
+        <span class="tag" id="recentDateTag">—</span>
+      </div>
+      <div class="results-grid" id="recentResults"></div>
+
+      <div class="section-title">
+        <h2>Launch vs. existing status</h2>
+        <span class="tag" id="launchStatusDateTag">—</span>
+      </div>
+      <div class="results-grid" id="launchStatusResults"></div>
+
+      <div class="section-title">
+        <h2>Active budgets (sum)</h2>
+        <span class="tag">summed across every row in the sheet</span>
+      </div>
+      <div class="results-grid" id="allDatesResults"></div>
+
+      <div class="section-title">
+        <h2>Active budgets breakdown</h2>
+        <span class="tag">by MYE / MYC / SGE / SGC</span>
+      </div>
+      <div class="results-grid" id="breakdownResults"></div>
+
+      <div class="section-title">
+        <h2>Slack report</h2>
+        <span class="tag">ready to paste in Slack</span>
+      </div>
+      <div class="card">
+        <div class="filter-block">
+          <label class="filter-label">Report type</label>
+          <div class="segmented" id="reportTypeSegmented">
+            <button type="button" class="seg-btn active" data-report-type="morning">AM Report</button>
+            <button type="button" class="seg-btn" data-report-type="evening">PM Report</button>
+          </div>
+        </div>
+        <div class="map-grid">
+          <div class="map-field" id="reportLinkAMField">
+            <label>Daily Review link (AM)</label>
+            <input type="text" id="reportLinkAM" value="https://docs.google.com/spreadsheets/d/1D3R6vNoYNjIFbngCBf0yd_sgxgwiyJHRbZueTsMMjcQ/edit?gid=1573852550#gid=1573852550">
+          </div>
+          <div class="map-field" id="reportLinkQp2aField">
+            <label>QP2A Simplified Report link</label>
+            <input type="text" id="reportLinkQp2a" value="https://docs.google.com/spreadsheets/d/12dj5ngbVyzsBQPRD0oMrXq1ExYhbXdUE/edit?gid=932537168#gid=932537168">
+          </div>
+          <div class="map-field" id="reportLinkPMField" style="display:none;">
+            <label>Daily Review link (PM)</label>
+            <input type="text" id="reportLinkPM" value="https://docs.google.com/spreadsheets/d/1D3R6vNoYNjIFbngCBf0yd_sgxgwiyJHRbZueTsMMjcQ/edit?gid=1611181630#gid=1611181630">
+          </div>
+        </div>
+        <div class="row-actions">
+          <button class="btn btn-primary" id="reportCopyBtn">Copy report</button>
+        </div>
+        <div class="msg" id="reportMsg"></div>
+        <pre class="report-preview" id="reportPreview">Process a sheet above to generate the report.</pre>
+      </div>
+
+      <div class="download-row">
+        <button class="btn btn-ghost" id="downloadBtn">Download results (.csv)</button>
+      </div>
+
+      <p class="footnote" id="qualityNote"></p>
+    </div>
+
+    <!-- MANUAL FILTER CARD -->
+    <div class="card" id="mfFilterCard" style="display:none;">
+      <div class="card-head">
+        <div class="step-num">3</div>
+        <h2>Filter & calculate</h2>
+        <div class="hint">Toggle buckets, statuses, pick a date, and a metric</div>
+      </div>
+      <div class="filter-block">
+        <label class="filter-label">Login code buckets</label>
+        <div class="pill-row" id="mfBucketPills"></div>
+      </div>
+      <div class="filter-block">
+        <label class="filter-label">Statuses</label>
+        <div class="pill-row" id="mfStatusPills"></div>
+      </div>
+      <div class="map-grid">
+        <div class="map-field">
+          <label>Date</label>
+          <select id="mfDateSelect"></select>
+        </div>
+        <div class="map-field">
+          <label>Metric</label>
+          <div class="segmented" id="mfMetricSegmented">
+            <button type="button" class="seg-btn active" data-metric="count">Count</button>
+            <button type="button" class="seg-btn" data-metric="sum">Sum</button>
+          </div>
+        </div>
+      </div>
+      <div class="row-actions">
+        <button class="btn btn-ghost" id="mfFilterResetBtn">Reset filters</button>
+      </div>
+      <div class="msg" id="mfFilterMsg"></div>
+    </div>
+
+    <!-- MANUAL RESULTS -->
+    <div id="mfResultsWrap" style="display:none;">
+      <div class="section-title">
+        <h2>Filtered results</h2>
+        <span class="tag" id="mfResultsScopeTag">—</span>
+      </div>
+      <div class="results-grid" id="mfFilteredResults"></div>
+
+      <div class="section-title" id="mfCombinedTitle" style="display:none;">
+        <h2>Combined totals</h2>
+        <span class="tag">MYE + MYC and/or SGE + SGC, when both are selected</span>
+      </div>
+      <div class="results-grid" id="mfCombinedResults"></div>
+
+      <div class="download-row">
+        <button class="btn btn-ghost" id="mfDownloadBtn">Download results (.csv)</button>
+      </div>
+      <p class="footnote" id="mfQualityNote"></p>
+    </div>
+
+  </div>
+
+  <!-- =================== TAB 2: LP GROUPING =================== -->
+  <div class="tab-panel" id="tab-lp">
+
+    <div class="card">
+      <div class="card-head">
+        <div class="step-num">1</div>
+        <h2>Load your sheet</h2>
+        <div class="hint">Upload .xlsx, .xls, or .csv</div>
+      </div>
+      <div id="lpDropzone" class="dropzone">
+        <div class="icon">⭱</div>
+        <div class="main-txt">Drop your Excel file here, or click to browse</div>
+        <div class="sub-txt">.xlsx, .xls, or .csv — first sheet is used</div>
+        <div id="lpFileName" class="file-name"></div>
+      </div>
+      <input type="file" id="lpFileInput" accept=".xlsx,.xls,.csv" style="display:none;">
+      <div class="msg" id="lpLoadMsg"></div>
+    </div>
+
+    <div class="card" id="lpMapCard" style="display:none;">
+      <div class="card-head">
+        <div class="step-num">2</div>
+        <h2>Confirm your columns</h2>
+        <div class="hint">Auto-detected — adjust if anything's off</div>
+      </div>
+      <div class="map-grid">
+        <div class="map-field"><label>Login Code column</label><select id="lpColLogin"></select></div>
+        <div class="map-field"><label>LP Name column</label><select id="lpColLpName"></select></div>
+        <div class="map-field"><label>CPID column</label><select id="lpColCpid"></select></div>
+        <div class="map-field"><label>Path column (for LP URI)</label><select id="lpColPath"></select></div>
+      </div>
+      <div class="row-actions">
+        <button class="btn btn-primary" id="lpCalcBtn">Group login codes</button>
+        <button class="btn btn-ghost" id="lpResetBtn">Start over</button>
+      </div>
+      <div class="msg" id="lpMapMsg"></div>
+      <details class="grid-preview" id="lpGridPreviewDetails">
+        <summary id="lpGridPreviewSummary">View imported data as a grid</summary>
+        <div class="grid-scroll"><table class="xgrid" id="lpXgrid"></table></div>
+      </details>
+    </div>
+
+    <div id="lpResultsWrap" style="display:none;">
+      <div class="section-title">
+        <h2>Grouped by bucket &amp; LP name</h2>
+        <span class="tag" id="lpSummaryTag">—</span>
+      </div>
+      <div id="lpSections"></div>
+
+      <div class="download-row">
+        <button class="btn btn-ghost" id="lpDownloadBtn">Download results (.csv)</button>
+      </div>
+      <p class="footnote" id="lpQualityNote"></p>
+    </div>
+
+  </div>
+
+  <!-- =================== TAB 3: URI PATH GENERATOR =================== -->
+  <div class="tab-panel" id="tab-uri">
+
+    <div class="card">
+      <div class="card-head">
+        <div class="step-num">1</div>
+        <h2>Generate a URI pair</h2>
+        <div class="hint">Enter a login code and a safe page path</div>
+      </div>
+      <div class="map-grid">
+        <div class="map-field">
+          <label>Login code</label>
+          <input type="text" id="uriLoginCode" placeholder="e.g. IBC22MYC198SL1395">
+        </div>
+        <div class="map-field">
+          <label>Safe page path</label>
+          <input type="text" id="uriSafePath" placeholder="e.g. an-introduction-to-disease-prevention">
+        </div>
+      </div>
+      <div class="row-actions">
+        <button class="btn btn-primary" id="uriGenerateBtn">Generate URLs</button>
+        <button class="btn btn-danger-ghost" id="uriClearBtn">Clear all</button>
+      </div>
+      <div class="msg" id="uriMsg"></div>
+      <p class="footnote">LP URL format: <code>/&lt;login code&gt;-&lt;safe page path&gt;</code>. Safe page URL format: <code>/&lt;safe page path&gt;-&lt;login code minus its IBC22 prefix&gt;</code>. The safe page path is always lowercased with words separated by dashes, however you type it.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="step-num">2</div>
+        <h2>Or batch-generate from a spreadsheet</h2>
+        <div class="hint">Upload .xlsx, .xls, or .csv</div>
+      </div>
+
+      <div id="uriDropzone" class="dropzone">
+        <div class="icon">⭱</div>
+        <div class="main-txt">Drop your Excel file here, or click to browse</div>
+        <div class="sub-txt">.xlsx, .xls, or .csv — first sheet is used</div>
+        <div id="uriFileName" class="file-name"></div>
+      </div>
+      <input type="file" id="uriFileInput" accept=".xlsx,.xls,.csv" style="display:none;">
+      <div class="msg" id="uriLoadMsg"></div>
+
+      <div class="map-grid" id="uriMapCard" style="display:none;">
+        <div class="map-field"><label>Login Code column</label><select id="uriColLogin"></select></div>
+        <div class="map-field"><label>Safe page path column</label><select id="uriColPath"></select></div>
+      </div>
+      <div class="row-actions" id="uriBatchActions" style="display:none;">
+        <button class="btn btn-primary" id="uriBatchGenerateBtn">Generate URLs from file</button>
+        <button class="btn btn-ghost" id="uriBatchResetBtn">Start over</button>
+      </div>
+      <div class="msg" id="uriBatchMsg"></div>
+
+      <details class="grid-preview" id="uriGridPreviewDetails" style="display:none;">
+        <summary id="uriGridPreviewSummary">View imported data as a grid</summary>
+        <div class="grid-scroll"><table class="xgrid" id="uriXgrid"></table></div>
+      </details>
+      <p class="footnote">Rows with a blank login code or a safe page path that has no letters or numbers are skipped. Duplicate login codes in the file are all generated.</p>
+    </div>
+
+    <div class="section-title">
+      <h2>Generated pairs</h2>
+      <span class="tag" id="uriCountTag">0 generated</span>
+    </div>
+
+    <div id="uriListWrap">
+      <div class="uri-empty" id="uriEmptyState">
+        <div class="icon">⛓</div>
+        Nothing generated yet — fill in the fields above and click Generate URLs.
+      </div>
+      <div class="uri-list" id="uriList" style="display:none;"></div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+(function(){
+
+  // =========================================================
+  // THEME SELECTION
+  // =========================================================
+  const themeSelect = document.getElementById('themeSelect');
+  const THEME_STORAGE_KEY = 'ibcOpsDeskTheme';
+  const validThemes = new Set([...themeSelect.querySelectorAll('option')].map(o=>o.value));
+
+  function applyTheme(theme, persist){
+    document.documentElement.setAttribute('data-theme', theme);
+    if(themeSelect.value !== theme) themeSelect.value = theme;
+    if(persist){
+      try{ localStorage.setItem(THEME_STORAGE_KEY, theme); }catch(e){}
+    }
+  }
+
+  let savedTheme = null;
+  try{ savedTheme = localStorage.getItem(THEME_STORAGE_KEY); }catch(e){}
+  applyTheme(validThemes.has(savedTheme) ? savedTheme : 'dark');
+
+  themeSelect.addEventListener('change', ()=> applyTheme(themeSelect.value, true));
+
+  // =========================================================
+  // LIVE CLOCK (12-hour, with date)
+  // =========================================================
+  (function(){
+    const timeEl = document.getElementById('liveClockTime');
+    const dateEl = document.getElementById('liveClockDate');
+    if(!timeEl || !dateEl) return;
+    function pad(n){ return String(n).padStart(2,'0'); }
+    function update(){
+      const now = new Date();
+      let h = now.getHours();
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12; if(h === 0) h = 12;
+      timeEl.textContent = `${pad(h)}:${pad(now.getMinutes())}:${pad(now.getSeconds())} ${ampm}`;
+      dateEl.textContent = now.toLocaleDateString(undefined, { weekday:'short', year:'numeric', month:'short', day:'numeric' });
+    }
+    update();
+    setInterval(update, 1000);
+  })();
+
+  // =========================================================
+  // PARALLAX BACKGROUND — Constellation Dust
+  // =========================================================
+  (function(){
+    const canvas = document.getElementById('bgCanvas');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let w, h, dpr;
+    function resize(){
+      dpr = Math.min(window.devicePixelRatio||1, 2);
+      w = window.innerWidth; h = window.innerHeight;
+      canvas.width = w*dpr; canvas.height = h*dpr;
+      canvas.style.width = w+'px'; canvas.style.height = h+'px';
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    function hexToRgb(hex){
+      hex = hex.replace('#','');
+      if(hex.length===3) hex = hex.split('').map(c=>c+c).join('');
+      const n = parseInt(hex,16) || 0x5eb8ff;
+      return [(n>>16)&255,(n>>8)&255,n&255];
+    }
+    function currentRgb(){
+      const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#5eb8ff';
+      return hexToRgb(accent);
+    }
+
+    const COUNT = Math.min(80, Math.floor((w*h)/20000));
+    const particles = [];
+    for(let i=0;i<COUNT;i++){
+      particles.push({ x:Math.random()*w, y:Math.random()*h, vx:(Math.random()-.5)*0.15, vy:(Math.random()-.5)*0.15, r:Math.random()*1.6+0.6 });
+    }
+
+    function frame(){
+      const rgb = currentRgb();
+      ctx.clearRect(0,0,w,h);
+      particles.forEach(p=>{
+        p.x+=p.vx; p.y+=p.vy;
+        if(p.x<0)p.x=w; if(p.x>w)p.x=0; if(p.y<0)p.y=h; if(p.y>h)p.y=0;
+      });
+      for(let i=0;i<particles.length;i++){
+        for(let j=i+1;j<particles.length;j++){
+          const a=particles[i], b=particles[j];
+          const dx=a.x-b.x, dy=a.y-b.y, dist=Math.sqrt(dx*dx+dy*dy);
+          if(dist<120){
+            ctx.strokeStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${(1-dist/120)*0.18})`;
+            ctx.lineWidth=1;
+            ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+          }
+        }
+      }
+      particles.forEach(p=>{
+        ctx.fillStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0.6)`;
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
+      });
+      if(!reduceMotion) requestAnimationFrame(frame);
+    }
+    frame();
+  })();
+
+  // =========================================================
+  // TAB SWITCHING
+  // =========================================================
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabInfo = {
+    status: {
+      title: 'Status counter',
+      sub: "Upload your tracking sheet. Choose Automatic for the one-click IBC22MY / IBC22SG report, or Manual to toggle buckets, statuses, a date, and count/sum yourself."
+    },
+    lp: {
+      title: 'Backend',
+      sub: 'Upload your tracking sheet to group login codes by MYE / MYC / SGE / SGC bucket, with the LP name, CPID, and a ready-made LP URI shown alongside each login code.'
+    },
+    uri: {
+      title: 'URI path generator',
+      sub: 'Enter a login code and a safe page path to instantly generate a matching LP URL and safe page URL. Generate as many pairs as you need.'
+    }
+  };
+  tabBtns.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const target = btn.dataset.tab;
+      tabBtns.forEach(b=>{ b.classList.toggle('active', b===btn); b.setAttribute('aria-selected', b===btn ? 'true':'false'); });
+      document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active', p.id === 'tab-'+target));
+      document.getElementById('pageTitle').textContent = tabInfo[target].title;
+      document.getElementById('pageSub').textContent = tabInfo[target].sub;
+      updateCellCount(target);
+    });
+  });
+
+  function updateCellCount(target){
+    const el = document.getElementById('cellCount');
+    if(target === 'status'){
+      el.textContent = state.rows.length ? `${state.rows.length.toLocaleString()} rows × ${state.headers.length} cols` : 'no data loaded';
+    } else if(target === 'lp'){
+      el.textContent = lpState.rows.length ? `${lpState.rows.length.toLocaleString()} rows × ${lpState.headers.length} cols` : 'no data loaded';
+    } else {
+      el.textContent = uriEntries.length ? `${uriEntries.length.toLocaleString()} pair${uriEntries.length===1?'':'s'} generated` : 'no pairs generated';
+    }
+  }
+
+  // =========================================================
+  // ===================  SHARED HELPERS  ====================
+  // =========================================================
+
+  function showMsg(id, type, text){
+    const el = document.getElementById(id);
+    el.textContent = text;
+    el.className = 'msg' + (type ? ' '+type+' show' : '');
+  }
+  function normKey(h){ return String(h).toLowerCase().replace(/[^a-z0-9]/g,''); }
+  function colLetter(i){
+    let s=''; i++;
+    while(i>0){ let m=(i-1)%26; s=String.fromCharCode(65+m)+s; i=Math.floor((i-1)/26); }
+    return s;
+  }
+  function fmtCell(c){
+    if(c instanceof Date && !isNaN(c)){
+      // fallback only — with raw:false (used when reading the workbook) cells normally
+      // arrive as their exact displayed text already, so this rarely triggers.
+      const pad = n => String(n).padStart(2,'0');
+      return `${c.getUTCFullYear()}-${pad(c.getUTCMonth()+1)}-${pad(c.getUTCDate())}`;
+    }
+    return String(c);
+  }
+  function parseDateCell(v){
+    if(v===null || v===undefined || v==='') return null;
+    if(v instanceof Date){
+      if(isNaN(v)) return null;
+      const pad = n => String(n).padStart(2,'0');
+      const raw = `${v.getUTCFullYear()}-${pad(v.getUTCMonth()+1)}-${pad(v.getUTCDate())}`;
+      return {y:v.getUTCFullYear(), m:v.getUTCMonth()+1, d:v.getUTCDate(), raw};
+    }
+    if(typeof v === 'number'){
+      const utcDays = Math.floor(v - 25569);
+      const utcMs = utcDays*86400*1000;
+      const dt = new Date(utcMs);
+      if(isNaN(dt)) return null;
+      const pad = n => String(n).padStart(2,'0');
+      const raw = `${dt.getUTCFullYear()}-${pad(dt.getUTCMonth()+1)}-${pad(dt.getUTCDate())}`;
+      return {y:dt.getUTCFullYear(), m:dt.getUTCMonth()+1, d:dt.getUTCDate(), raw};
+    }
+    if(typeof v === 'string'){
+      const s = v.trim();
+      if(!s) return null;
+      // the sheet's exact text is always kept as `raw` and shown verbatim — the y/m/d
+      // below are only used internally, for sorting and finding the latest date.
+      let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+      if(m) return {y:+m[1], m:+m[2], d:+m[3], raw:s};
+      m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
+      if(m){
+        let mm=+m[1], dd=+m[2], yy=+m[3];
+        if(yy<100) yy += (yy<70?2000:1900);
+        return {y:yy, m:mm, d:dd, raw:s};
+      }
+      const dt = new Date(s);
+      if(!isNaN(dt)) return {y:dt.getFullYear(), m:dt.getMonth()+1, d:dt.getDate(), raw:s};
+      return null;
+    }
+    return null;
+  }
+  function dateNum(o){ return o.y*10000 + o.m*100 + o.d; }
+  function dateLabel(o){
+    // always show the Launched Date exactly as it appears in the uploaded sheet
+    return o.raw !== undefined && o.raw !== '' ? o.raw : `${o.y}-${String(o.m).padStart(2,'0')}-${String(o.d).padStart(2,'0')}`;
+  }
+  function parseNumber(v){
+    if(v===null || v===undefined || v==='') return 0;
+    if(typeof v === 'number') return isFinite(v) ? v : 0;
+    let s = String(v).trim();
+    if(!s) return 0;
+    let neg = false;
+    if(/^\(.*\)$/.test(s)){ neg = true; s = s.slice(1,-1); }
+    s = s.replace(/[^0-9.\-]/g,'');
+    const n = parseFloat(s);
+    if(isNaN(n)) return 0;
+    return neg ? -Math.abs(n) : n;
+  }
+  function fmtNum(n){
+    const rounded = Math.round(n*100)/100;
+    return rounded.toLocaleString(undefined, {maximumFractionDigits:2});
+  }
+  function cleanStatus(v){
+    return String(v).trim().toLowerCase().replace(/\s+/g,' ').replace(/\s*-\s*/g,' - ');
+  }
+
+  function buildResultCard(bucket, subtitle, rows, totalRow){
+    const card = document.createElement('div');
+    card.className = 'result-card';
+    card.innerHTML = `
+      <div class="rc-head">
+        <div class="code">${bucket}</div>
+        <div class="count">${subtitle}</div>
+      </div>`;
+    const table = document.createElement('table');
+    table.className = 'res';
+    table.innerHTML = `<thead><tr><th>Status</th><th style="text-align:right;">Total</th></tr></thead>`;
+    const tbody = document.createElement('tbody');
+    rows.forEach(([label,dot,val])=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td class="label"><span class="dot ${dot}"></span>${label}</td><td class="num flash">${val}</td>`;
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    if(totalRow){
+      const tfoot = document.createElement('tfoot');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${totalRow[0]}</td><td class="num">${totalRow[1]}</td>`;
+      tfoot.appendChild(tr);
+      table.appendChild(tfoot);
+    }
+    card.appendChild(table);
+    return card;
+  }
+
+  // =========================================================
+  // ===================  STATUS COUNTER (shared upload)  ====
+  // =========================================================
+
+  let state = { rows: [], headers: [] };
+  let currentMode = 'automatic';
+
+  // ---------- upload ----------
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+  dropzone.addEventListener('click', ()=>fileInput.click());
+  dropzone.addEventListener('dragover', e=>{e.preventDefault(); dropzone.classList.add('drag');});
+  dropzone.addEventListener('dragleave', ()=>dropzone.classList.remove('drag'));
+  dropzone.addEventListener('drop', e=>{
+    e.preventDefault(); dropzone.classList.remove('drag');
+    if(e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener('change', e=>{
+    if(e.target.files.length) handleFile(e.target.files[0]);
+  });
+
+  function handleFile(file){
+    document.getElementById('fileName').textContent = file.name;
+    const isCsv = /\.csv$/i.test(file.name);
+    const reader = new FileReader();
+    reader.onload = function(e){
+      try{
+        let wb;
+        if(isCsv){
+          wb = XLSX.read(e.target.result, {type:'string'});
+        } else {
+          wb = XLSX.read(new Uint8Array(e.target.result), {type:'array', cellDates:true});
+        }
+        const sheet = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet, {header:1, raw:false, defval:''});
+        loadRows(rows, `"${wb.SheetNames[0]}" sheet in ${file.name}`);
+      }catch(err){
+        showMsg('loadMsg','err','Could not read that file: '+err.message);
+      }
+    };
+    if(isCsv) reader.readAsText(file); else reader.readAsArrayBuffer(file);
+  }
+
+  function loadRows(rows, sourceLabel){
+    rows = rows.filter(r => r.some(c => String(c).trim() !== ''));
+    if(rows.length < 2){
+      showMsg('loadMsg','err','Could not find a header row plus at least one data row.');
+      return;
+    }
+    const width = Math.max(...rows.map(r=>r.length));
+    rows.forEach(r=>{ while(r.length<width) r.push(''); });
+
+    state.headers = rows[0].map(h=>String(h).trim());
+    state.rows = rows.slice(1);
+
+    showMsg('loadMsg','ok', `Loaded ${state.rows.length.toLocaleString()} rows from ${sourceLabel}.`);
+    updateCellCount('status');
+
+    buildMapping();
+    renderGrid();
+    document.getElementById('mapCard').style.display = 'block';
+    document.getElementById('resultsWrap').style.display = 'none';
+    document.getElementById('mfFilterCard').style.display = 'none';
+    document.getElementById('mfResultsWrap').style.display = 'none';
+    document.getElementById('mapCard').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  document.getElementById('resetBtn').addEventListener('click', ()=>{
+    state = {rows:[], headers:[]};
+    mfData = null;
+    document.getElementById('fileName').textContent = '';
+    fileInput.value = '';
+    document.getElementById('mapCard').style.display = 'none';
+    document.getElementById('resultsWrap').style.display = 'none';
+    document.getElementById('mfFilterCard').style.display = 'none';
+    document.getElementById('mfResultsWrap').style.display = 'none';
+    updateCellCount('status');
+    showMsg('loadMsg','',''); document.getElementById('loadMsg').className='msg';
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  // ---------- column mapping ----------
+  function buildMapping(){
+    const selLogin = document.getElementById('colLogin');
+    const selStatus = document.getElementById('colStatus');
+    const selDate = document.getElementById('colDate');
+    const selAmount = document.getElementById('colAmount');
+    [selLogin, selStatus, selDate, selAmount].forEach(s=>s.innerHTML='');
+
+    state.headers.forEach((h,i)=>{
+      const label = h ? h : `Column ${i+1}`;
+      [selLogin, selStatus, selDate, selAmount].forEach(sel=>{
+        const opt = document.createElement('option');
+        opt.value = i; opt.textContent = `${colLetter(i)} — ${label}`;
+        sel.appendChild(opt);
+      });
+    });
+
+    let loginGuess=-1, statusGuess=-1, dateGuess=-1, amountGuess=-1;
+    state.headers.forEach((h,i)=>{
+      const k = normKey(h);
+      if(loginGuess===-1 && (k.includes('logincode') || (k.includes('login')&&k.includes('code')))) loginGuess=i;
+      if(statusGuess===-1 && k.includes('status')) statusGuess=i;
+      if(dateGuess===-1 && k.includes('launch') && k.includes('date')) dateGuess=i;
+      if(amountGuess===-1 && (k.includes('budget') || k.includes('amount') || k.includes('spend') || k.includes('value'))) amountGuess=i;
+    });
+    if(loginGuess===-1) state.headers.forEach((h,i)=>{ if(loginGuess===-1 && normKey(h).includes('login')) loginGuess=i; });
+    if(dateGuess===-1) state.headers.forEach((h,i)=>{ if(dateGuess===-1 && normKey(h).includes('date')) dateGuess=i; });
+
+    selLogin.value = loginGuess>=0 ? loginGuess : 0;
+    selStatus.value = statusGuess>=0 ? statusGuess : 0;
+    selDate.value = dateGuess>=0 ? dateGuess : 0;
+    selAmount.value = amountGuess>=0 ? amountGuess : 0;
+
+    updateGridHighlight();
+    [selLogin, selStatus, selDate, selAmount].forEach(sel=>sel.addEventListener('change', updateGridHighlight));
+  }
+
+  // ---------- grid preview ----------
+  function renderGrid(){
+    const table = document.getElementById('xgrid');
+    table.innerHTML = '';
+    const maxPreview = 200;
+    const thead = document.createElement('thead');
+
+    const letterRow = document.createElement('tr');
+    letterRow.className = 'colletters';
+    letterRow.appendChild(document.createElement('th')).className='rownum';
+    state.headers.forEach((h,i)=>{
+      const th=document.createElement('th'); th.textContent=colLetter(i); letterRow.appendChild(th);
+    });
+    thead.appendChild(letterRow);
+
+    const hRow = document.createElement('tr');
+    hRow.className = 'headerrow';
+    const cornerTh = document.createElement('th'); cornerTh.className='rownum'; cornerTh.textContent='1'; hRow.appendChild(cornerTh);
+    state.headers.forEach(h=>{ const th=document.createElement('th'); th.textContent=h||'(blank)'; hRow.appendChild(th); });
+    thead.appendChild(hRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    const shown = state.rows.slice(0, maxPreview);
+    shown.forEach((r,ri)=>{
+      const tr = document.createElement('tr');
+      tr.dataset.rowIndex = ri;
+      const rn = document.createElement('td'); rn.className='rownum'; rn.textContent = ri+2;
+      tr.appendChild(rn);
+      r.forEach(c=>{ const td=document.createElement('td'); td.textContent = fmtCell(c); tr.appendChild(td); });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+
+    document.getElementById('gridPreviewSummary').textContent =
+      state.rows.length > maxPreview
+        ? `View imported data as a grid (showing first ${maxPreview} of ${state.rows.length.toLocaleString()} rows)`
+        : `View imported data as a grid (${state.rows.length.toLocaleString()} rows)`;
+    updateGridHighlight();
+  }
+
+  const HL_DOT_CLASSES = ['active','flagged','loggedout','payment','rejected','trafficalt'];
+
+  function updateGridHighlight(){
+    const li = +document.getElementById('colLogin').value;
+    const si = +document.getElementById('colStatus').value;
+    const di = +document.getElementById('colDate').value;
+    const ai = +document.getElementById('colAmount').value;
+    document.querySelectorAll('#xgrid tbody tr').forEach(tr=>{
+      const cells = tr.children;
+      for(let i=1;i<cells.length;i++){
+        const colIdx = i-1;
+        cells[i].classList.toggle('mapped', colIdx===li || colIdx===si || colIdx===di || colIdx===ai);
+      }
+      HL_DOT_CLASSES.forEach(c=>tr.classList.remove('hl-'+c));
+      if(currentMode === 'manual'){
+        const ri = +tr.dataset.rowIndex;
+        const rawStatus = state.rows[ri] ? state.rows[ri][si] : undefined;
+        if(rawStatus !== undefined && String(rawStatus).trim() !== ''){
+          const cs = cleanStatus(rawStatus);
+          const matched = STATUSES.find(s => mfSelectedStatuses.has(s.key) && s.match(cs));
+          if(matched) tr.classList.add('hl-'+matched.dot);
+        }
+      }
+    });
+  }
+
+  // ---------- processing mode toggle ----------
+  document.querySelectorAll('#modeSegmented .seg-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#modeSegmented .seg-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      currentMode = btn.dataset.mode;
+      document.getElementById('calcBtn').textContent = currentMode === 'automatic' ? 'Calculate results' : 'Process sheet';
+      document.getElementById('gridLegend').style.display = currentMode === 'manual' ? 'flex' : 'none';
+      document.getElementById('gridLegendNote').style.display = currentMode === 'manual' ? 'block' : 'none';
+      // hide whichever result sections belong to the other mode until recalculated
+      document.getElementById('resultsWrap').style.display = 'none';
+      document.getElementById('mfFilterCard').style.display = 'none';
+      document.getElementById('mfResultsWrap').style.display = 'none';
+      updateGridHighlight();
+    });
+  });
+
+  document.getElementById('calcBtn').addEventListener('click', ()=>{
+    if(currentMode === 'automatic') calculateAutomatic();
+    else processManual();
+  });
+
+  // =========================================================
+  // ===============  AUTOMATIC MODE (original)  =============
+  // =========================================================
+
+  function matchBucketCategory(cs){
+    if(cs.includes('logged out')) return 'Logged Out';
+    if(cs === 'active') return 'Active';
+    if(cs === 'rejected') return 'Rejected';
+    if(cs === 'flagged') return 'Flagged';
+    if(cs === 'payment issue') return 'Payment Issue';
+    if(cs === 'in review') return 'In Review';
+    return null;
+  }
+  function loginBucket(v){
+    const s = String(v).trim().toUpperCase();
+    if(s.startsWith('IBC22MY')) return 'IBC22MY';
+    if(s.startsWith('IBC22SG')) return 'IBC22SG';
+    return null;
+  }
+
+  function calculateAutomatic(){
+    const li = +document.getElementById('colLogin').value;
+    const si = +document.getElementById('colStatus').value;
+    const di = +document.getElementById('colDate').value;
+    const ai = +document.getElementById('colAmount').value;
+
+    const picks = [li,si,di,ai];
+    if(new Set(picks).size !== 4){
+      showMsg('mapMsg','warn','Login Code, Status, Launched Date, and the Value column should be four different columns.');
+      return;
+    }
+
+    let maxDateNum = -1, maxDateObj = null;
+    let unparsedDates = 0;
+    state.rows.forEach(r=>{
+      const d = parseDateCell(r[di]);
+      if(!d){ unparsedDates++; return; }
+      const n = dateNum(d);
+      if(n > maxDateNum){ maxDateNum = n; maxDateObj = d; }
+    });
+
+    const recentCounts = {
+      'IBC22MY': {'Active':0,'Rejected':0,'Flagged':0,'Logged Out':0,'Payment Issue':0,'In Review':0},
+      'IBC22SG': {'Active':0,'Rejected':0,'Flagged':0,'Logged Out':0,'Payment Issue':0,'In Review':0}
+    };
+    const allSums = {
+      'IBC22MY': {loggedOutActive:0, loggedOutInactive:0, active:0, paymentIssue:0, trafficRestricted:0, inReview:0},
+      'IBC22SG': {loggedOutActive:0, loggedOutInactive:0, active:0, paymentIssue:0, trafficRestricted:0, inReview:0}
+    };
+    const subBucketSums = {
+      MYE:{loggedOutActive:0, active:0, paymentIssue:0},
+      MYC:{loggedOutActive:0, active:0, paymentIssue:0},
+      SGE:{loggedOutActive:0, active:0, paymentIssue:0},
+      SGC:{loggedOutActive:0, active:0, paymentIssue:0}
+    };
+    const launchStatusCounts = {
+      'IBC22MY': {yesterdayActive:0, yesterdayFlagged:0, existingActive:0, existingFlagged:0},
+      'IBC22SG': {yesterdayActive:0, yesterdayFlagged:0, existingActive:0, existingFlagged:0}
+    };
+    const unrecognizedStatuses = new Set();
+    let unmatchedLoginRows = 0;
+
+    state.rows.forEach(r=>{
+      const bucket = loginBucket(r[li]);
+      if(!bucket){ unmatchedLoginRows++; return; }
+      const cs = cleanStatus(r[si]);
+      const val = parseNumber(r[ai]);
+
+      const a = allSums[bucket];
+      if(cs === 'logged out - active') a.loggedOutActive += val;
+      else if(cs === 'logged out - inactive') a.loggedOutInactive += val;
+      else if(cs === 'active') a.active += val;
+      else if(cs === 'payment issue') a.paymentIssue += val;
+      else if(cs === 'traffic restricted') a.trafficRestricted += val;
+      else if(cs === 'in review') a.inReview += val;
+
+      const subBucket = loginSubBucket(r[li]);
+      if(subBucket){
+        const sb = subBucketSums[subBucket];
+        if(cs === 'logged out - active') sb.loggedOutActive += val;
+        else if(cs === 'active') sb.active += val;
+        else if(cs === 'payment issue') sb.paymentIssue += val;
+      }
+
+      const d = parseDateCell(r[di]);
+      if(d && dateNum(d) === maxDateNum){
+        const cat = matchBucketCategory(cs);
+        if(cat) recentCounts[bucket][cat]++;
+        else if(cs) unrecognizedStatuses.add(cs);
+      }
+
+      const isLatestDate = !!d && dateNum(d) === maxDateNum;
+      const ls = launchStatusCounts[bucket];
+      if(cs === 'active'){
+        if(isLatestDate) ls.yesterdayActive++; else ls.existingActive++;
+      } else if(cs === 'flagged'){
+        if(isLatestDate) ls.yesterdayFlagged++; else ls.existingFlagged++;
+      }
+    });
+
+    renderRecentResults(recentCounts, maxDateObj);
+    renderLaunchStatusResults(launchStatusCounts, maxDateObj);
+    renderAllDatesResults(allSums);
+    renderBreakdownResults(subBucketSums);
+    renderMorningReport(subBucketSums);
+
+    let note = `Loaded ${state.rows.length.toLocaleString()} data rows. `;
+    if(unmatchedLoginRows) note += `${unmatchedLoginRows.toLocaleString()} row(s) had a login code that didn't start with IBC22MY or IBC22SG, so they're excluded from both summaries. `;
+    if(unparsedDates) note += `${unparsedDates.toLocaleString()} row(s) had a Launched Date that couldn't be read. `;
+    if(unrecognizedStatuses.size) note += `Statuses on the most recent date not in the requested list (ignored there): ${[...unrecognizedStatuses].map(s=>`"${s}"`).join(', ')}.`;
+    document.getElementById('qualityNote').textContent = note;
+
+    document.getElementById('mfFilterCard').style.display = 'none';
+    document.getElementById('mfResultsWrap').style.display = 'none';
+    document.getElementById('resultsWrap').style.display = 'block';
+    document.getElementById('resultsWrap').scrollIntoView({behavior:'smooth', block:'start'});
+    showMsg('mapMsg','ok','Results calculated below.');
+  }
+
+  function shortBucketLabel(bucket){
+    if(bucket === 'IBC22MY') return 'MY';
+    if(bucket === 'IBC22SG') return 'SG';
+    return bucket;
+  }
+
+  const RECENT_ROWS = [
+    ['Active','active'], ['Rejected','rejected'], ['Flagged','flagged'],
+    ['Logged Out','loggedout'], ['Payment Issue','payment'], ['In Review','review']
+  ];
+  function renderRecentResults(counts, dateObj){
+    document.getElementById('recentDateTag').textContent = dateObj ? dateLabel(dateObj) : 'no valid dates found';
+    const wrap = document.getElementById('recentResults');
+    wrap.innerHTML = '';
+    ['IBC22MY','IBC22SG'].forEach(bucket=>{
+      const total = RECENT_ROWS.reduce((s,[label])=>s+counts[bucket][label],0);
+      wrap.appendChild(buildResultCard(shortBucketLabel(bucket), `${total.toLocaleString()} rows on this date`, RECENT_ROWS.map(([label,dot])=>[label,dot,fmtNum(counts[bucket][label])])));
+    });
+  }
+
+  const LAUNCH_STATUS_ROWS = [
+    ['Yesterday Launch - Active','active','yesterdayActive'],
+    ['Yesterday Launch - Flagged','flagged','yesterdayFlagged'],
+    ['Existing Camps - Active','active','existingActive'],
+    ['Existing Camps - Flagged','flagged','existingFlagged']
+  ];
+  function renderLaunchStatusResults(counts, dateObj){
+    document.getElementById('launchStatusDateTag').textContent = dateObj
+      ? `latest date: ${dateLabel(dateObj)} · all other dates grouped as existing`
+      : 'no valid dates found';
+    const wrap = document.getElementById('launchStatusResults');
+    wrap.innerHTML = '';
+    ['IBC22MY','IBC22SG'].forEach(bucket=>{
+      const c = counts[bucket];
+      const total = LAUNCH_STATUS_ROWS.reduce((s,[,,k])=>s+c[k],0);
+      wrap.appendChild(buildResultCard(
+        shortBucketLabel(bucket),
+        `${total.toLocaleString()} rows`,
+        LAUNCH_STATUS_ROWS.map(([label,dot,k])=>[label,dot,fmtNum(c[k])])
+      ));
+    });
+  }
+
+  function renderAllDatesResults(sums){
+    const wrap = document.getElementById('allDatesResults');
+    wrap.innerHTML = '';
+    ['IBC22MY','IBC22SG'].forEach(bucket=>{
+      const s = sums[bucket];
+      const activeBudget = s.loggedOutActive + s.active + s.paymentIssue;
+      const loggedOut = s.loggedOutActive + s.loggedOutInactive;
+      const rows = [
+        ['Active Budget','budget', fmtNum(activeBudget)],
+        ['Payment Issue','payment', fmtNum(s.paymentIssue)],
+        ['Traffic Restricted','traffic', fmtNum(s.trafficRestricted)],
+        ['In Review','review', fmtNum(s.inReview)],
+        ['Logged Out','loggedout', fmtNum(loggedOut)],
+      ];
+      wrap.appendChild(buildResultCard(shortBucketLabel(bucket), 'summed across every row in the sheet', rows));
+    });
+  }
+
+  const BREAKDOWN_GROUPS = [
+    {label:'MY', parts:['MYE','MYC']},
+    {label:'SG', parts:['SGE','SGC']}
+  ];
+  function renderBreakdownResults(subSums){
+    const wrap = document.getElementById('breakdownResults');
+    wrap.innerHTML = '';
+    BREAKDOWN_GROUPS.forEach(g=>{
+      const card = document.createElement('div');
+      card.className = 'result-card';
+      card.innerHTML = `
+        <div class="rc-head">
+          <div class="code">${g.label}</div>
+          <div class="count">breakdown by code</div>
+        </div>`;
+
+      const table = document.createElement('table');
+      table.className = 'res';
+      table.innerHTML = `<thead><tr>
+        <th>Code</th>
+        <th style="text-align:right;">Active</th>
+        <th style="text-align:right;">Logged Out - Active</th>
+        <th style="text-align:right;">Payment Issue</th>
+      </tr></thead>`;
+
+      const tbody = document.createElement('tbody');
+      let subActive=0, subLoA=0, subPay=0;
+      g.parts.forEach(key=>{
+        const s = subSums[key];
+        subActive += s.active; subLoA += s.loggedOutActive; subPay += s.paymentIssue;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td class="label">${key}</td><td class="num">$${fmtNum(s.active)}</td><td class="num">$${fmtNum(s.loggedOutActive)}</td><td class="num">$${fmtNum(s.paymentIssue)}</td>`;
+        tbody.appendChild(tr);
+      });
+      const subTr = document.createElement('tr');
+      subTr.innerHTML = `<td class="label"><b>Sub-Total</b></td><td class="num">$${fmtNum(subActive)}</td><td class="num">$${fmtNum(subLoA)}</td><td class="num">$${fmtNum(subPay)}</td>`;
+      tbody.appendChild(subTr);
+      table.appendChild(tbody);
+
+      const grandTotal = subActive + subLoA + subPay;
+      const tfoot = document.createElement('tfoot');
+      tfoot.innerHTML = `<tr><td>Total</td><td class="num" colspan="3">$${fmtNum(grandTotal)}</td></tr>`;
+      table.appendChild(tfoot);
+
+      card.appendChild(table);
+      wrap.appendChild(card);
+    });
+  }
+
+  // ---------- slack report (morning / evening) ----------
+  let lastSubBucketSums = null;
+  let currentReportType = 'morning';
+
+  function fmtMoney(n){
+    return Number(n||0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+  }
+
+  function buildReportText(subSums, type){
+    const myActiveMYE = subSums.MYE.active, myActiveMYC = subSums.MYC.active;
+    const myLoA = subSums.MYE.loggedOutActive + subSums.MYC.loggedOutActive;
+    const myPay = subSums.MYE.paymentIssue + subSums.MYC.paymentIssue;
+    const myTotal = myActiveMYE + myActiveMYC + myLoA + myPay;
+
+    const sgActiveSGE = subSums.SGE.active, sgActiveSGC = subSums.SGC.active;
+    const sgLoA = subSums.SGE.loggedOutActive + subSums.SGC.loggedOutActive;
+    const sgPay = subSums.SGE.paymentIssue + subSums.SGC.paymentIssue;
+    const sgTotal = sgActiveSGE + sgActiveSGC + sgLoA + sgPay;
+
+    const budgetLines = [
+      `ACTIVE BUDGET (IBC22 MY OVERALL)`,
+      `IBC22\tMYE\t$${fmtMoney(myActiveMYE)}`,
+      `IBC22\tMYC\t$${fmtMoney(myActiveMYC)}`,
+      ...(myLoA !== 0 ? [`Logged Out - Active - $${fmtMoney(myLoA)}`] : []),
+      ...(myPay !== 0 ? [`Payment Issue - $${fmtMoney(myPay)}`] : []),
+      `Total   $${fmtMoney(myTotal)}`,
+      ``,
+      `ACTIVE BUDGET (IBC22 SG OVERALL)`,
+      `IBC22\tSGE\t$${fmtMoney(sgActiveSGE)}`,
+      `IBC22\tSGC\t$${fmtMoney(sgActiveSGC)}`,
+      ...(sgLoA !== 0 ? [`Logged Out - Active - $${fmtMoney(sgLoA)}`] : []),
+      ...(sgPay !== 0 ? [`Payment Issue - $${fmtMoney(sgPay)}`] : []),
+      `Total   $${fmtMoney(sgTotal)}`,
+    ];
+
+    if(type === 'evening'){
+      const linkPM = document.getElementById('reportLinkPM').value.trim();
+      return [
+        `Hi @Jiaco and @SL, evening report's now ready here! Under PM tab.`,
+        ``,
+        `The Daily Review [IBC22]`,
+        linkPM,
+        ``,
+        ...budgetLines,
+        ``,
+        `And here are the current active budgets. Thank you! :slightly_smiling_face:`
+      ].join('\n');
+    }
+
+    const linkAM = document.getElementById('reportLinkAM').value.trim();
+    const linkQp2a = document.getElementById('reportLinkQp2a').value.trim();
+    return [
+      `Good morning @Jiaco and @SL morning report's now ready here!`,
+      ``,
+      `The Daily Review [IBC22]`,
+      linkAM,
+      ``,
+      `QP2A New Simplified Report`,
+      linkQp2a,
+      ``,
+      ...budgetLines,
+      ``,
+      `Lastly, here are the Acquisition Comprehensive report for yesterday. Thank you! :slightly_smiling_face:`
+    ].join('\n');
+  }
+
+  function renderMorningReport(subSums){
+    lastSubBucketSums = subSums;
+    document.getElementById('reportPreview').textContent = buildReportText(subSums, currentReportType);
+  }
+
+  document.querySelectorAll('#reportTypeSegmented .seg-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#reportTypeSegmented .seg-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      currentReportType = btn.dataset.reportType;
+      document.getElementById('reportLinkQp2aField').style.display = currentReportType === 'morning' ? 'block' : 'none';
+      document.getElementById('reportLinkPMField').style.display = currentReportType === 'evening' ? 'block' : 'none';
+      if(lastSubBucketSums) renderMorningReport(lastSubBucketSums);
+    });
+  });
+
+  ['reportLinkAM','reportLinkQp2a','reportLinkPM'].forEach(id=>{
+    document.getElementById(id).addEventListener('input', ()=>{
+      if(lastSubBucketSums) renderMorningReport(lastSubBucketSums);
+    });
+  });
+
+  document.getElementById('reportCopyBtn').addEventListener('click', ()=>{
+    if(!lastSubBucketSums){
+      showMsg('reportMsg','warn','Process a sheet above first to generate the report.');
+      return;
+    }
+    const text = document.getElementById('reportPreview').textContent;
+    copyToClipboard(text, document.getElementById('reportCopyBtn'));
+    showMsg('reportMsg','ok','Report copied — ready to paste in Slack.');
+  });
+
+  document.getElementById('downloadBtn').addEventListener('click', ()=>{
+    const rows = [];
+    rows.push(['Section','Login Code','Status','Total']);
+    document.querySelectorAll('#recentResults .result-card').forEach(card=>{
+      const bucket = card.querySelector('.code').textContent;
+      card.querySelectorAll('tbody tr').forEach(tr=>{
+        const label = tr.querySelector('.label').textContent.trim();
+        const val = tr.querySelector('.num').textContent.trim();
+        rows.push(['Yesterday launches', bucket, label, val]);
+      });
+    });
+    document.querySelectorAll('#launchStatusResults .result-card').forEach(card=>{
+      const bucket = card.querySelector('.code').textContent;
+      card.querySelectorAll('tbody tr').forEach(tr=>{
+        const label = tr.querySelector('.label').textContent.trim();
+        const val = tr.querySelector('.num').textContent.trim();
+        rows.push(['Launch vs. existing status', bucket, label, val]);
+      });
+    });
+    document.querySelectorAll('#allDatesResults .result-card').forEach(card=>{
+      const bucket = card.querySelector('.code').textContent;
+      card.querySelectorAll('tbody tr').forEach(tr=>{
+        const label = tr.querySelector('.label').textContent.trim();
+        const val = tr.querySelector('.num').textContent.trim();
+        rows.push(['Active budgets', bucket, label, val]);
+      });
+    });
+    document.querySelectorAll('#breakdownResults .result-card').forEach(card=>{
+      const bucket = card.querySelector('.code').textContent;
+      card.querySelectorAll('tbody tr').forEach(tr=>{
+        const tds = tr.querySelectorAll('td');
+        const codeLabel = tds[0].textContent.trim();
+        rows.push(['Active budgets breakdown', bucket, `${codeLabel} — Active`, tds[1].textContent.trim()]);
+        rows.push(['Active budgets breakdown', bucket, `${codeLabel} — Logged Out - Active`, tds[2].textContent.trim()]);
+        rows.push(['Active budgets breakdown', bucket, `${codeLabel} — Payment Issue`, tds[3].textContent.trim()]);
+      });
+      card.querySelectorAll('tfoot tr').forEach(tr=>{
+        const tds = tr.querySelectorAll('td');
+        rows.push(['Active budgets breakdown', bucket, tds[0].textContent.trim(), tds[1].textContent.trim()]);
+      });
+    });
+    const csv = rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], {type:'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'status_counter_automatic_results.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  // =========================================================
+  // ===============  MANUAL MODE (interactive)  ==============
+  // =========================================================
+
+  const BUCKETS = [
+    {key:'MYE', label:'MYE', header:'IBC22MYE'},
+    {key:'MYC', label:'MYC', header:'IBC22MYC'},
+    {key:'SGE', label:'SGE', header:'IBC22SGE'},
+    {key:'SGC', label:'SGC', header:'IBC22SGC'}
+  ];
+  function loginSubBucket(v){
+    const s = String(v).trim().toUpperCase();
+    for(const b of BUCKETS){ if(s.startsWith(b.header)) return b.key; }
+    return null;
+  }
+
+  const STATUSES = [
+    {key:'active',   label:'Active',                 dot:'active',    match:cs=>cs==='active'},
+    {key:'flagged',  label:'Flagged',                 dot:'flagged',   match:cs=>cs==='flagged'},
+    {key:'loA',      label:'Logged Out - Active',     dot:'loggedout', match:cs=>cs==='logged out - active'},
+    {key:'loI',      label:'Logged Out - Inactive',   dot:'loggedout', match:cs=>cs==='logged out - inactive'},
+    {key:'payment',  label:'Payment Issue',           dot:'payment',   match:cs=>cs==='payment issue'},
+    {key:'rejected', label:'Rejected',                dot:'rejected',  match:cs=>cs==='rejected'},
+    {key:'traffic',  label:'Traffic Restricted',      dot:'trafficalt',match:cs=>cs==='traffic restricted'},
+    {key:'review',   label:'In Review',               dot:'trafficalt',match:cs=>cs==='in review'}
+  ];
+
+  // fixed display order for the Combined Totals cards only (Filtered Results keeps the order above)
+  const COMBINED_STATUS_ORDER = ['active','rejected','flagged','loA','loI','payment','review'];
+
+  const COMBINED_GROUPS = [
+    {parts:['MYE','MYC'], header:'IBC22MY'},
+    {parts:['SGE','SGC'], header:'IBC22SG'}
+  ];
+
+  function buildNormalizedData(li, si, di, ai){
+    const normalizedRows = [];
+    const dateObjByNum = new Map();
+    let maxDateNum = -1, maxDateObj = null;
+    let unmatchedLoginRows = 0, unparsedDates = 0;
+    const unrecognizedStatuses = new Set();
+
+    state.rows.forEach(r=>{
+      const bucket = loginSubBucket(r[li]);
+      const cs = cleanStatus(r[si]);
+      const val = parseNumber(r[ai]);
+      const d = parseDateCell(r[di]);
+      const dn = d ? dateNum(d) : null;
+
+      if(!bucket) unmatchedLoginRows++;
+      if(!d) unparsedDates++;
+      if(d){
+        dateObjByNum.set(dn, d);
+        if(dn > maxDateNum){ maxDateNum = dn; maxDateObj = d; }
+      }
+      if(cs && !STATUSES.some(s=>s.match(cs))) unrecognizedStatuses.add(cs);
+
+      normalizedRows.push({bucket, statusClean:cs, dateNum:dn, value:val});
+    });
+
+    return {normalizedRows, dateObjByNum, maxDateNum, maxDateObj, unmatchedLoginRows, unparsedDates, unrecognizedStatuses};
+  }
+
+  function tallyRows(rows, buckets, statuses, metric){
+    const tally = {};
+    buckets.forEach(b=>{ tally[b.key] = {}; statuses.forEach(s=>{ tally[b.key][s.key] = 0; }); });
+    rows.forEach(r=>{
+      if(!r.bucket || !tally[r.bucket]) return;
+      const st = statuses.find(s=>s.match(r.statusClean));
+      if(!st) return;
+      tally[r.bucket][st.key] += metric === 'count' ? 1 : r.value;
+    });
+    return tally;
+  }
+
+  function formatMetricValue(n, metric){
+    return metric === 'count' ? n.toLocaleString() : ('$' + fmtNum(n));
+  }
+
+  function renderBucketCards(wrapId, buckets, statuses, tally, metric){
+    const wrap = document.getElementById(wrapId);
+    wrap.innerHTML = '';
+    buckets.forEach(b=>{
+      const rowsOut = statuses.map(s=>[s.label, s.dot, formatMetricValue(tally[b.key][s.key], metric)]);
+      const total = statuses.reduce((sum,s)=>sum+tally[b.key][s.key],0);
+      const subtitle = metric === 'count' ? `${total.toLocaleString()} matching rows` : `${formatMetricValue(total,metric)} total`;
+      wrap.appendChild(buildResultCard(b.header, subtitle, rowsOut));
+    });
+  }
+
+  function renderCombinedCards(wrapId, activeStatuses, tally, metric){
+    const wrap = document.getElementById(wrapId);
+    wrap.innerHTML = '';
+    const activeKeys = new Set(activeStatuses.map(s=>s.key));
+    const statuses = COMBINED_STATUS_ORDER
+      .map(key => STATUSES.find(s=>s.key===key))
+      .filter(s => s && activeKeys.has(s.key));
+    let any = false;
+    COMBINED_GROUPS.forEach(g=>{
+      if(!g.parts.every(p=>tally[p])) return;
+      if(!statuses.length) return;
+      any = true;
+      const combinedTally = {};
+      statuses.forEach(s=>{ combinedTally[s.key] = g.parts.reduce((sum,p)=>sum+tally[p][s.key],0); });
+      const rowsOut = statuses.map(s=>[s.label, s.dot, formatMetricValue(combinedTally[s.key], metric)]);
+      const total = statuses.reduce((sum,s)=>sum+combinedTally[s.key],0);
+      const totalRow = ['Total', formatMetricValue(total, metric)];
+      const subtitle = metric === 'count' ? `${total.toLocaleString()} matching rows` : `${formatMetricValue(total,metric)} total`;
+      wrap.appendChild(buildResultCard(g.header, subtitle, rowsOut, totalRow));
+    });
+    return any;
+  }
+
+  let mfSelectedBuckets = new Set();
+  let mfSelectedStatuses = new Set();
+  let mfCurrentMetric = 'count';
+  let mfData = null;
+
+  function processManual(){
+    const li = +document.getElementById('colLogin').value;
+    const si = +document.getElementById('colStatus').value;
+    const di = +document.getElementById('colDate').value;
+    const ai = +document.getElementById('colAmount').value;
+
+    if(new Set([li,si,di,ai]).size !== 4){
+      showMsg('mapMsg','warn','Login Code, Status, Launched Date, and the Value column should be four different columns.');
+      return;
+    }
+
+    mfData = buildNormalizedData(li, si, di, ai);
+
+    const dateSelect = document.getElementById('mfDateSelect');
+    dateSelect.innerHTML = '';
+    const optYesterday = document.createElement('option');
+    optYesterday.value = 'yesterday';
+    optYesterday.textContent = mfData.maxDateObj ? `Yesterday launches (${dateLabel(mfData.maxDateObj)})` : 'Yesterday launches (no valid dates)';
+    dateSelect.appendChild(optYesterday);
+    const optAll = document.createElement('option');
+    optAll.value = 'all'; optAll.textContent = 'Select all';
+    dateSelect.appendChild(optAll);
+    [...mfData.dateObjByNum.entries()].sort((a,b)=>b[0]-a[0]).forEach(([num,obj])=>{
+      const opt = document.createElement('option');
+      opt.value = String(num); opt.textContent = dateLabel(obj);
+      dateSelect.appendChild(opt);
+    });
+    dateSelect.value = 'yesterday';
+
+    mfSelectedBuckets = new Set();
+    mfSelectedStatuses = new Set();
+    mfCurrentMetric = 'count';
+    document.querySelectorAll('#mfMetricSegmented .seg-btn').forEach(b=>b.classList.toggle('active', b.dataset.metric==='count'));
+    mfBuildPills();
+
+    let note = `Loaded ${state.rows.length.toLocaleString()} data rows. `;
+    if(mfData.unmatchedLoginRows) note += `${mfData.unmatchedLoginRows.toLocaleString()} row(s) had a login code that didn't start with IBC22MYE, IBC22MYC, IBC22SGE, or IBC22SGC, so they're excluded from every bucket. `;
+    if(mfData.unparsedDates) note += `${mfData.unparsedDates.toLocaleString()} row(s) had a Launched Date that couldn't be read, so they're excluded whenever "Yesterday launches" or a specific date is selected (they still count under "Select all"). `;
+    if(mfData.unrecognizedStatuses.size) note += `Statuses found that aren't in the filter list (always excluded): ${[...mfData.unrecognizedStatuses].map(s=>`"${s}"`).join(', ')}.`;
+    document.getElementById('mfQualityNote').textContent = note;
+
+    document.getElementById('resultsWrap').style.display = 'none';
+    document.getElementById('mfFilterCard').style.display = 'block';
+    document.getElementById('mfResultsWrap').style.display = 'block';
+    mfUpdateResults();
+    updateGridHighlight();
+    document.getElementById('mfFilterCard').scrollIntoView({behavior:'smooth', block:'start'});
+    showMsg('mapMsg','ok','Data is ready — select at least one bucket and one status below to display results.');
+  }
+
+  function mfBuildPills(){
+    const bucketWrap = document.getElementById('mfBucketPills');
+    bucketWrap.innerHTML = '';
+    BUCKETS.forEach(b=>{
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'pill' + (mfSelectedBuckets.has(b.key) ? ' active' : '');
+      btn.textContent = b.label;
+      btn.addEventListener('click', ()=>{
+        if(mfSelectedBuckets.has(b.key)) mfSelectedBuckets.delete(b.key); else mfSelectedBuckets.add(b.key);
+        btn.classList.toggle('active');
+        mfUpdateResults();
+      });
+      bucketWrap.appendChild(btn);
+    });
+
+    const statusWrap = document.getElementById('mfStatusPills');
+    statusWrap.innerHTML = '';
+    STATUSES.forEach(s=>{
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'pill' + (mfSelectedStatuses.has(s.key) ? ' active' : '');
+      btn.innerHTML = `<span class="dot ${s.dot}"></span>${s.label}`;
+      btn.addEventListener('click', ()=>{
+        if(mfSelectedStatuses.has(s.key)) mfSelectedStatuses.delete(s.key); else mfSelectedStatuses.add(s.key);
+        btn.classList.toggle('active');
+        mfUpdateResults();
+        updateGridHighlight();
+      });
+      statusWrap.appendChild(btn);
+    });
+  }
+
+  document.getElementById('mfDateSelect').addEventListener('change', mfUpdateResults);
+
+  document.querySelectorAll('#mfMetricSegmented .seg-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#mfMetricSegmented .seg-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      mfCurrentMetric = btn.dataset.metric;
+      mfUpdateResults();
+    });
+  });
+
+  document.getElementById('mfFilterResetBtn').addEventListener('click', ()=>{
+    mfSelectedBuckets = new Set();
+    mfSelectedStatuses = new Set();
+    mfCurrentMetric = 'count';
+    document.querySelectorAll('#mfMetricSegmented .seg-btn').forEach(b=>b.classList.toggle('active', b.dataset.metric==='count'));
+    document.getElementById('mfDateSelect').value = 'yesterday';
+    mfBuildPills();
+    mfUpdateResults();
+    updateGridHighlight();
+    showMsg('mfFilterMsg','ok','Filters cleared — select at least one bucket and one status to display results.');
+  });
+
+  function mfUpdateResults(){
+    if(!mfData) return;
+
+    const dateScope = document.getElementById('mfDateSelect').value;
+    let rows = mfData.normalizedRows;
+    let scopeLabel;
+    if(dateScope === 'yesterday'){
+      rows = mfData.normalizedRows.filter(r=>r.dateNum === mfData.maxDateNum);
+      scopeLabel = mfData.maxDateObj ? `Yesterday launches — ${dateLabel(mfData.maxDateObj)}` : 'Yesterday launches — no valid dates found';
+    } else if(dateScope === 'all'){
+      scopeLabel = 'Select all — every row in the sheet';
+    } else {
+      const dn = +dateScope;
+      rows = mfData.normalizedRows.filter(r=>r.dateNum === dn);
+      const obj = mfData.dateObjByNum.get(dn);
+      scopeLabel = obj ? dateLabel(obj) : 'Selected date';
+    }
+
+    const activeBuckets = BUCKETS.filter(b=>mfSelectedBuckets.has(b.key));
+    const activeStatuses = STATUSES.filter(s=>mfSelectedStatuses.has(s.key));
+
+    document.getElementById('mfResultsScopeTag').textContent =
+      `${scopeLabel} · ${mfCurrentMetric === 'count' ? 'counting matching rows' : 'summing the value column'}`;
+
+    const wrap = document.getElementById('mfFilteredResults');
+    const combinedWrap = document.getElementById('mfCombinedResults');
+    const combinedTitle = document.getElementById('mfCombinedTitle');
+    wrap.innerHTML = '';
+    combinedWrap.innerHTML = '';
+    combinedTitle.style.display = 'none';
+
+    if(!activeBuckets.length || !activeStatuses.length){
+      const p = document.createElement('p');
+      p.className = 'footnote';
+      p.textContent = 'Select at least one login code bucket and one status above to see results.';
+      wrap.appendChild(p);
+      return;
+    }
+
+    const tally = tallyRows(rows, activeBuckets, activeStatuses, mfCurrentMetric);
+    renderBucketCards('mfFilteredResults', activeBuckets, activeStatuses, tally, mfCurrentMetric);
+    const anyCombined = renderCombinedCards('mfCombinedResults', activeStatuses, tally, mfCurrentMetric);
+    combinedTitle.style.display = anyCombined ? 'flex' : 'none';
+  }
+
+  document.getElementById('mfDownloadBtn').addEventListener('click', ()=>{
+    const rows = [];
+    rows.push([`Scope: ${document.getElementById('mfResultsScopeTag').textContent}`]);
+    rows.push(['Login Code Bucket','Status','Total']);
+    document.querySelectorAll('#mfFilteredResults .result-card').forEach(card=>{
+      const bucket = card.querySelector('.code').textContent;
+      card.querySelectorAll('tbody tr').forEach(tr=>{
+        const label = tr.querySelector('.label').textContent.trim();
+        const val = tr.querySelector('.num').textContent.trim();
+        rows.push([bucket, label, val]);
+      });
+    });
+    document.querySelectorAll('#mfCombinedResults .result-card').forEach(card=>{
+      const bucket = card.querySelector('.code').textContent + ' (combined)';
+      card.querySelectorAll('tbody tr, tfoot tr').forEach(tr=>{
+        const labelEl = tr.querySelector('.label');
+        const label = labelEl ? labelEl.textContent.trim() : tr.children[0].textContent.trim();
+        const val = tr.querySelector('.num').textContent.trim();
+        rows.push([bucket, label, val]);
+      });
+    });
+    const csv = rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], {type:'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'status_counter_manual_results.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  // =========================================================
+  // ===================  LP GROUPING  ========================
+  // =========================================================
+
+  let lpState = { rows: [], headers: [] };
+  const LP_BUCKET_TONE = {MYE:'tone-MYE', MYC:'tone-MYC', SGE:'tone-SGE', SGC:'tone-SGC'};
+
+  // renders a cell's text alongside a small copy button
+  function cellCopyHtml(text){
+    return `<span class="cell-copy-wrap"><span class="cell-text">${escapeHtml(text)}</span><button type="button" class="copy-btn cell-copy-btn" data-copy="${escapeAttr(text)}" title="Copy">⧉</button></span>`;
+  }
+
+  // ---------- upload ----------
+  const lpDropzone = document.getElementById('lpDropzone');
+  const lpFileInput = document.getElementById('lpFileInput');
+  lpDropzone.addEventListener('click', ()=>lpFileInput.click());
+  lpDropzone.addEventListener('dragover', e=>{e.preventDefault(); lpDropzone.classList.add('drag');});
+  lpDropzone.addEventListener('dragleave', ()=>lpDropzone.classList.remove('drag'));
+  lpDropzone.addEventListener('drop', e=>{
+    e.preventDefault(); lpDropzone.classList.remove('drag');
+    if(e.dataTransfer.files.length) lpHandleFile(e.dataTransfer.files[0]);
+  });
+  lpFileInput.addEventListener('change', e=>{
+    if(e.target.files.length) lpHandleFile(e.target.files[0]);
+  });
+
+  function lpHandleFile(file){
+    document.getElementById('lpFileName').textContent = file.name;
+    const isCsv = /\.csv$/i.test(file.name);
+    const reader = new FileReader();
+    reader.onload = function(e){
+      try{
+        let wb;
+        if(isCsv){
+          wb = XLSX.read(e.target.result, {type:'string'});
+        } else {
+          wb = XLSX.read(new Uint8Array(e.target.result), {type:'array', cellDates:true});
+        }
+        const sheet = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet, {header:1, raw:false, defval:''});
+        lpLoadRows(rows, `"${wb.SheetNames[0]}" sheet in ${file.name}`);
+      }catch(err){
+        showMsg('lpLoadMsg','err','Could not read that file: '+err.message);
+      }
+    };
+    if(isCsv) reader.readAsText(file); else reader.readAsArrayBuffer(file);
+  }
+
+  function lpLoadRows(rows, sourceLabel){
+    rows = rows.filter(r => r.some(c => String(c).trim() !== ''));
+    if(rows.length < 2){
+      showMsg('lpLoadMsg','err','Could not find a header row plus at least one data row.');
+      return;
+    }
+    const width = Math.max(...rows.map(r=>r.length));
+    rows.forEach(r=>{ while(r.length<width) r.push(''); });
+
+    lpState.headers = rows[0].map(h=>String(h).trim());
+    lpState.rows = rows.slice(1);
+
+    showMsg('lpLoadMsg','ok', `Loaded ${lpState.rows.length.toLocaleString()} rows from ${sourceLabel}.`);
+    updateCellCount('lp');
+
+    lpBuildMapping();
+    lpRenderGrid();
+    document.getElementById('lpMapCard').style.display = 'block';
+    document.getElementById('lpResultsWrap').style.display = 'none';
+    document.getElementById('lpMapCard').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  document.getElementById('lpResetBtn').addEventListener('click', ()=>{
+    lpState = {rows:[], headers:[]};
+    document.getElementById('lpFileName').textContent = '';
+    lpFileInput.value = '';
+    document.getElementById('lpMapCard').style.display = 'none';
+    document.getElementById('lpResultsWrap').style.display = 'none';
+    updateCellCount('lp');
+    showMsg('lpLoadMsg','',''); document.getElementById('lpLoadMsg').className='msg';
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  // ---------- column mapping ----------
+  function lpBuildMapping(){
+    const selLogin = document.getElementById('lpColLogin');
+    const selLpName = document.getElementById('lpColLpName');
+    const selCpid = document.getElementById('lpColCpid');
+    const selPath = document.getElementById('lpColPath');
+    [selLogin, selLpName, selCpid, selPath].forEach(s=>s.innerHTML='');
+
+    lpState.headers.forEach((h,i)=>{
+      const label = h ? h : `Column ${i+1}`;
+      [selLogin, selLpName, selCpid, selPath].forEach(sel=>{
+        const opt = document.createElement('option');
+        opt.value = i; opt.textContent = `${colLetter(i)} — ${label}`;
+        sel.appendChild(opt);
+      });
+    });
+
+    let loginGuess=-1, lpNameGuess=-1, cpidGuess=-1, pathGuess=-1;
+    lpState.headers.forEach((h,i)=>{
+      const k = normKey(h);
+      if(loginGuess===-1 && (k.includes('logincode') || (k.includes('login')&&k.includes('code')))) loginGuess=i;
+      if(cpidGuess===-1 && k.includes('cpid')) cpidGuess=i;
+      if(pathGuess===-1 && k.includes('path')) pathGuess=i;
+      if(lpNameGuess===-1 && (k.includes('lpname') || (k.includes('lp')&&k.includes('name')) || k.includes('landingpage') || (k.includes('landing')&&k.includes('page')))) lpNameGuess=i;
+    });
+    if(loginGuess===-1) lpState.headers.forEach((h,i)=>{ if(loginGuess===-1 && normKey(h).includes('login')) loginGuess=i; });
+    if(cpidGuess===-1) lpState.headers.forEach((h,i)=>{ if(cpidGuess===-1 && normKey(h).includes('cp')&&normKey(h).includes('id')) cpidGuess=i; });
+    if(lpNameGuess===-1) lpState.headers.forEach((h,i)=>{ if(lpNameGuess===-1 && normKey(h).includes('name') && i!==loginGuess && i!==cpidGuess) lpNameGuess=i; });
+    if(pathGuess===-1) pathGuess = lpNameGuess; // fall back to LP Name column if no dedicated Path column is found
+
+    selLogin.value = loginGuess>=0 ? loginGuess : 0;
+    selLpName.value = lpNameGuess>=0 ? lpNameGuess : (lpState.headers.length>1?1:0);
+    selCpid.value = cpidGuess>=0 ? cpidGuess : (lpState.headers.length>2?2:0);
+    selPath.value = pathGuess>=0 ? pathGuess : selLpName.value;
+
+    lpUpdateGridHighlight();
+    [selLogin, selLpName, selCpid, selPath].forEach(sel=>sel.addEventListener('change', lpUpdateGridHighlight));
+  }
+
+  // ---------- grid preview ----------
+  function lpRenderGrid(){
+    const table = document.getElementById('lpXgrid');
+    table.innerHTML = '';
+    const maxPreview = 200;
+    const thead = document.createElement('thead');
+
+    const letterRow = document.createElement('tr');
+    letterRow.className = 'colletters';
+    letterRow.appendChild(document.createElement('th')).className='rownum';
+    lpState.headers.forEach((h,i)=>{
+      const th=document.createElement('th'); th.textContent=colLetter(i); letterRow.appendChild(th);
+    });
+    thead.appendChild(letterRow);
+
+    const hRow = document.createElement('tr');
+    hRow.className = 'headerrow';
+    const cornerTh = document.createElement('th'); cornerTh.className='rownum'; cornerTh.textContent='1'; hRow.appendChild(cornerTh);
+    lpState.headers.forEach(h=>{ const th=document.createElement('th'); th.textContent=h||'(blank)'; hRow.appendChild(th); });
+    thead.appendChild(hRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    const shown = lpState.rows.slice(0, maxPreview);
+    shown.forEach((r,ri)=>{
+      const tr = document.createElement('tr');
+      const rn = document.createElement('td'); rn.className='rownum'; rn.textContent = ri+2;
+      tr.appendChild(rn);
+      r.forEach(c=>{ const td=document.createElement('td'); td.textContent = fmtCell(c); tr.appendChild(td); });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+
+    document.getElementById('lpGridPreviewSummary').textContent =
+      lpState.rows.length > maxPreview
+        ? `View imported data as a grid (showing first ${maxPreview} of ${lpState.rows.length.toLocaleString()} rows)`
+        : `View imported data as a grid (${lpState.rows.length.toLocaleString()} rows)`;
+    lpUpdateGridHighlight();
+  }
+
+  function lpUpdateGridHighlight(){
+    const li = +document.getElementById('lpColLogin').value;
+    const ni = +document.getElementById('lpColLpName').value;
+    const ci = +document.getElementById('lpColCpid').value;
+    const pi = +document.getElementById('lpColPath').value;
+    document.querySelectorAll('#lpXgrid tbody tr').forEach(tr=>{
+      const cells = tr.children;
+      for(let i=1;i<cells.length;i++){
+        const colIdx = i-1;
+        cells[i].classList.toggle('mapped', colIdx===li || colIdx===ni || colIdx===ci || colIdx===pi);
+      }
+    });
+  }
+
+  // ---------- group ----------
+  document.getElementById('lpCalcBtn').addEventListener('click', lpProcess);
+
+  function lpProcess(){
+    const li = +document.getElementById('lpColLogin').value;
+    const ni = +document.getElementById('lpColLpName').value;
+    const ci = +document.getElementById('lpColCpid').value;
+    const pi = +document.getElementById('lpColPath').value;
+
+    const core = new Set([li, ci]);
+    if(core.size !== 2 || core.has(ni) || core.has(pi)){
+      showMsg('lpMapMsg','warn','Login Code and CPID must each be different from LP Name, Path, and each other.');
+      return;
+    }
+
+    // lpData: { order:[lpName,...], groups:{ lpName: {entries:[{code,cpid,path,bucket}, ...]} } }
+    // grouped purely by LP name — the IBC22MYE/MYC/SGE/SGC bucket is kept per-entry, not as the grouping key
+    const lpData = { order: [], groups: {} };
+    let unmatchedLoginRows = 0;
+    let totalMatched = 0;
+
+    lpState.rows.forEach(r=>{
+      const bucket = loginSubBucket(r[li]);
+      if(!bucket){ unmatchedLoginRows++; return; }
+      const code = String(r[li]).trim();
+      const lpName = String(r[ni]).trim() || '(blank LP name)';
+      const cpid = String(r[ci]).trim() || '—';
+      const path = String(r[pi]).trim();
+
+      if(!lpData.groups[lpName]){
+        lpData.groups[lpName] = { entries: [] };
+        lpData.order.push(lpName);
+      }
+      // each login code keeps the CPID, Path, and bucket from its own row — never merged with other rows
+      lpData.groups[lpName].entries.push({ code, cpid, path, bucket });
+      totalMatched++;
+    });
+
+    lpRenderSections(lpData);
+
+    let note = `Loaded ${lpState.rows.length.toLocaleString()} data rows — ${totalMatched.toLocaleString()} matched a known bucket. `;
+    if(unmatchedLoginRows) note += `${unmatchedLoginRows.toLocaleString()} row(s) had a login code that didn't start with IBC22MYE, IBC22MYC, IBC22SGE, or IBC22SGC, so they're excluded. `;
+    document.getElementById('lpQualityNote').textContent = note;
+
+    document.getElementById('lpSummaryTag').textContent = `${totalMatched.toLocaleString()} login codes across ${lpData.order.length.toLocaleString()} LP name${lpData.order.length===1?'':'s'}`;
+
+    document.getElementById('lpResultsWrap').style.display = 'block';
+    document.getElementById('lpResultsWrap').scrollIntoView({behavior:'smooth', block:'start'});
+    showMsg('lpMapMsg','ok','Grouped below.');
+  }
+
+  function lpRenderSections(lpData){
+    const container = document.getElementById('lpSections');
+    container.innerHTML = '';
+
+    lpData.order.forEach(lpName=>{
+      const g = lpData.groups[lpName];
+      if(!g.entries.length) return;
+
+      const bucketCounts = {};
+      g.entries.forEach(e=>{ bucketCounts[e.bucket] = (bucketCounts[e.bucket]||0)+1; });
+      const bucketSummary = BUCKETS
+        .filter(b=>bucketCounts[b.key])
+        .map(b=>`${bucketCounts[b.key]} ${b.label}`)
+        .join(' · ');
+      const tone = LP_BUCKET_TONE[g.entries[0].bucket];
+
+      const section = document.createElement('div');
+      section.className = 'lp-bucket-section';
+
+      section.innerHTML = `
+        <div class="lp-bucket-head ${tone}">
+          <span class="code">${escapeHtml(lpName)}</span>
+          <span class="count">${g.entries.length.toLocaleString()} login code${g.entries.length===1?'':'s'}${bucketSummary ? ' · '+bucketSummary : ''}</span>
+        </div>`;
+
+      // table (Done | Login Code | Bucket | CPID | LP URI), one row per login code in this LP name
+      const table = document.createElement('table');
+      table.className = 'lp-flat';
+      table.innerHTML = `<thead><tr><th class="lp-check-cell"></th><th>Login Code</th><th>Bucket</th><th>CPID</th><th>LP URI</th></tr></thead>`;
+      const tbody = document.createElement('tbody');
+      g.entries.forEach(e=>{
+        const lpUri = `/${e.code}-${slugify(e.path || lpName)}`;
+        const bucketTone = LP_BUCKET_TONE[e.bucket] || '';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="lp-check-cell"><input type="checkbox" class="lp-row-check" title="Mark this batch as done"></td>
+          <td>${cellCopyHtml(e.code)}</td>
+          <td><span class="lp-bucket-badge ${bucketTone}">${e.bucket}</span></td>
+          <td>${cellCopyHtml(e.cpid)}</td>
+          <td>${cellCopyHtml(lpUri)}</td>`;
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      const tableScroll = document.createElement('div');
+      tableScroll.className = 'lp-table-scroll';
+      tableScroll.appendChild(table);
+      section.appendChild(tableScroll);
+
+      container.appendChild(section);
+    });
+
+    // wire up per-cell copy buttons
+    container.querySelectorAll('.cell-copy-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>copyToClipboard(btn.getAttribute('data-copy'), btn));
+    });
+    // wire up done checkboxes — checking one strikes through the whole row (login code, bucket, CPID, LP URI)
+    container.querySelectorAll('.lp-row-check').forEach(cb=>{
+      cb.addEventListener('change', ()=>{
+        cb.closest('tr').classList.toggle('lp-row-done', cb.checked);
+      });
+    });
+
+    if(!container.children.length){
+      const p = document.createElement('p');
+      p.className = 'footnote';
+      p.textContent = 'No rows matched a known login code bucket (IBC22MYE, IBC22MYC, IBC22SGE, IBC22SGC).';
+      container.appendChild(p);
+    }
+  }
+
+  document.getElementById('lpDownloadBtn').addEventListener('click', ()=>{
+    const rows = [];
+    rows.push(['LP Name','Bucket','CPID','Login Code','LP URI','Done']);
+    document.querySelectorAll('#lpSections .lp-bucket-section').forEach(section=>{
+      const lpName = section.querySelector('.lp-bucket-head .code').textContent;
+      section.querySelectorAll('table.lp-flat tbody tr').forEach(tr=>{
+        const cellText = tr.querySelectorAll('td .cell-text');
+        const code = cellText[0].textContent.trim();
+        const bucket = tr.querySelector('.lp-bucket-badge').textContent.trim();
+        const cpid = cellText[1].textContent.trim();
+        const lpUri = cellText[2].textContent.trim();
+        const done = tr.querySelector('.lp-row-check').checked ? 'Yes' : 'No';
+        rows.push([lpName, bucket, cpid, code, lpUri, done]);
+      });
+    });
+    const csv = rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], {type:'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'lp_grouping_results.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  // =========================================================
+  // ===================  URI PATH GENERATOR  ================
+  // =========================================================
+
+  let uriEntries = []; // {id, loginCode, safePath, lpUrl, safeUrl}
+
+  const uriLoginInput = document.getElementById('uriLoginCode');
+  const uriSafeInput  = document.getElementById('uriSafePath');
+  const uriListEl      = document.getElementById('uriList');
+  const uriEmptyEl     = document.getElementById('uriEmptyState');
+  const uriCountTag    = document.getElementById('uriCountTag');
+
+  document.getElementById('uriGenerateBtn').addEventListener('click', generateUri);
+  [uriLoginInput, uriSafeInput].forEach(inp=>{
+    inp.addEventListener('keydown', e=>{ if(e.key === 'Enter') generateUri(); });
+  });
+  document.getElementById('uriClearBtn').addEventListener('click', ()=>{
+    if(!uriEntries.length) return;
+    uriEntries = [];
+    renderUriList();
+    showMsg('uriMsg','ok','Cleared all generated pairs.');
+  });
+
+  function generateUri(){
+    const loginCode = uriLoginInput.value.trim();
+    const safePathRaw = uriSafeInput.value.trim();
+
+    if(!loginCode || !safePathRaw){
+      showMsg('uriMsg','warn','Enter both a login code and a safe page path.');
+      return;
+    }
+
+    const safePath = slugify(safePathRaw);
+    if(!safePath){
+      showMsg('uriMsg','warn','The safe page path needs at least one letter or number.');
+      return;
+    }
+    const lpUrl = `/${loginCode}-${safePath}`;
+    const strippedCode = loginCode.replace(/^ibc22/i, '');
+    const safeUrl = `/${safePath}-${strippedCode}`;
+
+    uriEntries.unshift({
+      id: 'u'+Date.now()+Math.random().toString(36).slice(2,7),
+      loginCode, safePath, lpUrl, safeUrl
+    });
+
+    uriLoginInput.value = '';
+    uriSafeInput.value = '';
+    uriLoginInput.focus();
+
+    renderUriList();
+    showMsg('uriMsg','ok','Generated a new URI pair below.');
+  }
+
+  function deleteUriEntry(id){
+    uriEntries = uriEntries.filter(e=>e.id !== id);
+    renderUriList();
+  }
+
+  function renderUriList(){
+    uriCountTag.textContent = `${uriEntries.length.toLocaleString()} generated`;
+    updateCellCount('uri');
+
+    if(!uriEntries.length){
+      uriEmptyEl.style.display = 'block';
+      uriListEl.style.display = 'none';
+      uriListEl.innerHTML = '';
+      return;
+    }
+    uriEmptyEl.style.display = 'none';
+    uriListEl.style.display = 'flex';
+    uriListEl.innerHTML = '';
+
+    uriEntries.forEach(entry=>{
+      const card = document.createElement('div');
+      card.className = 'uri-card';
+      card.innerHTML = `
+        <div class="uri-card-top">
+          <div class="uri-card-src">Login code: <b>${escapeHtml(entry.loginCode)}</b> &nbsp;·&nbsp; Path: <b>${escapeHtml(entry.safePath)}</b></div>
+          <button class="btn btn-danger-ghost btn-icon" title="Delete this pair" data-del="${entry.id}">✕</button>
+        </div>
+        <div class="uri-rows">
+          <div class="uri-row">
+            <span class="uri-tag">LP URL</span>
+            <span class="uri-val">${escapeHtml(entry.lpUrl)}</span>
+            <button class="copy-btn" data-copy="${escapeAttr(entry.lpUrl)}">Copy</button>
+          </div>
+          <div class="uri-row safe">
+            <span class="uri-tag">Safe page URL</span>
+            <span class="uri-val">${escapeHtml(entry.safeUrl)}</span>
+            <button class="copy-btn" data-copy="${escapeAttr(entry.safeUrl)}">Copy</button>
+          </div>
+        </div>`;
+      uriListEl.appendChild(card);
+    });
+
+    uriListEl.querySelectorAll('[data-del]').forEach(btn=>{
+      btn.addEventListener('click', ()=>deleteUriEntry(btn.getAttribute('data-del')));
+    });
+    uriListEl.querySelectorAll('[data-copy]').forEach(btn=>{
+      btn.addEventListener('click', ()=>copyToClipboard(btn.getAttribute('data-copy'), btn));
+    });
+  }
+
+  // ---------- batch upload ----------
+  let uriBatchState = { rows: [], headers: [] };
+
+  const uriDropzone = document.getElementById('uriDropzone');
+  const uriFileInput = document.getElementById('uriFileInput');
+  uriDropzone.addEventListener('click', ()=>uriFileInput.click());
+  uriDropzone.addEventListener('dragover', e=>{e.preventDefault(); uriDropzone.classList.add('drag');});
+  uriDropzone.addEventListener('dragleave', ()=>uriDropzone.classList.remove('drag'));
+  uriDropzone.addEventListener('drop', e=>{
+    e.preventDefault(); uriDropzone.classList.remove('drag');
+    if(e.dataTransfer.files.length) uriHandleFile(e.dataTransfer.files[0]);
+  });
+  uriFileInput.addEventListener('change', e=>{
+    if(e.target.files.length) uriHandleFile(e.target.files[0]);
+  });
+
+  function uriHandleFile(file){
+    document.getElementById('uriFileName').textContent = file.name;
+    const isCsv = /\.csv$/i.test(file.name);
+    const reader = new FileReader();
+    reader.onload = function(e){
+      try{
+        let wb;
+        if(isCsv){
+          wb = XLSX.read(e.target.result, {type:'string'});
+        } else {
+          wb = XLSX.read(new Uint8Array(e.target.result), {type:'array', cellDates:true});
+        }
+        const sheet = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet, {header:1, raw:false, defval:''});
+        uriLoadRows(rows, `"${wb.SheetNames[0]}" sheet in ${file.name}`);
+      }catch(err){
+        showMsg('uriLoadMsg','err','Could not read that file: '+err.message);
+      }
+    };
+    if(isCsv) reader.readAsText(file); else reader.readAsArrayBuffer(file);
+  }
+
+  function uriLoadRows(rows, sourceLabel){
+    rows = rows.filter(r => r.some(c => String(c).trim() !== ''));
+    if(rows.length < 2){
+      showMsg('uriLoadMsg','err','Could not find a header row plus at least one data row.');
+      return;
+    }
+    const width = Math.max(...rows.map(r=>r.length));
+    rows.forEach(r=>{ while(r.length<width) r.push(''); });
+
+    uriBatchState.headers = rows[0].map(h=>String(h).trim());
+    uriBatchState.rows = rows.slice(1);
+
+    showMsg('uriLoadMsg','ok', `Loaded ${uriBatchState.rows.length.toLocaleString()} rows from ${sourceLabel}.`);
+    updateCellCount('uri');
+
+    uriBuildMapping();
+    uriRenderGrid();
+    document.getElementById('uriMapCard').style.display = 'grid';
+    document.getElementById('uriBatchActions').style.display = 'flex';
+    document.getElementById('uriGridPreviewDetails').style.display = 'block';
+    showMsg('uriBatchMsg','','');
+    document.getElementById('uriMapCard').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  document.getElementById('uriBatchResetBtn').addEventListener('click', ()=>{
+    uriBatchState = {rows:[], headers:[]};
+    document.getElementById('uriFileName').textContent = '';
+    uriFileInput.value = '';
+    document.getElementById('uriMapCard').style.display = 'none';
+    document.getElementById('uriBatchActions').style.display = 'none';
+    document.getElementById('uriGridPreviewDetails').style.display = 'none';
+    updateCellCount('uri');
+    showMsg('uriLoadMsg','',''); document.getElementById('uriLoadMsg').className='msg';
+    showMsg('uriBatchMsg','',''); document.getElementById('uriBatchMsg').className='msg';
+  });
+
+  function uriBuildMapping(){
+    const selLogin = document.getElementById('uriColLogin');
+    const selPath = document.getElementById('uriColPath');
+    [selLogin, selPath].forEach(s=>s.innerHTML='');
+
+    uriBatchState.headers.forEach((h,i)=>{
+      const label = h ? h : `Column ${i+1}`;
+      [selLogin, selPath].forEach(sel=>{
+        const opt = document.createElement('option');
+        opt.value = i; opt.textContent = `${colLetter(i)} — ${label}`;
+        sel.appendChild(opt);
+      });
+    });
+
+    let loginGuess=-1, pathGuess=-1;
+    uriBatchState.headers.forEach((h,i)=>{
+      const k = normKey(h);
+      if(loginGuess===-1 && (k.includes('logincode') || (k.includes('login')&&k.includes('code')))) loginGuess=i;
+      if(pathGuess===-1 && (k.includes('safepath') || k.includes('safepage') || (k.includes('safe')&&k.includes('path')) || k.includes('slug'))) pathGuess=i;
+    });
+    if(loginGuess===-1) uriBatchState.headers.forEach((h,i)=>{ if(loginGuess===-1 && normKey(h).includes('login')) loginGuess=i; });
+    if(pathGuess===-1) uriBatchState.headers.forEach((h,i)=>{ if(pathGuess===-1 && normKey(h).includes('path') && i!==loginGuess) pathGuess=i; });
+    if(pathGuess===-1) uriBatchState.headers.forEach((h,i)=>{ if(pathGuess===-1 && normKey(h).includes('page') && i!==loginGuess) pathGuess=i; });
+
+    selLogin.value = loginGuess>=0 ? loginGuess : 0;
+    selPath.value = pathGuess>=0 ? pathGuess : (uriBatchState.headers.length>1 ? 1 : 0);
+
+    uriUpdateGridHighlight();
+    [selLogin, selPath].forEach(sel=>sel.addEventListener('change', uriUpdateGridHighlight));
+  }
+
+  function uriRenderGrid(){
+    const table = document.getElementById('uriXgrid');
+    table.innerHTML = '';
+    const maxPreview = 200;
+    const thead = document.createElement('thead');
+
+    const letterRow = document.createElement('tr');
+    letterRow.className = 'colletters';
+    letterRow.appendChild(document.createElement('th')).className='rownum';
+    uriBatchState.headers.forEach((h,i)=>{
+      const th=document.createElement('th'); th.textContent=colLetter(i); letterRow.appendChild(th);
+    });
+    thead.appendChild(letterRow);
+
+    const hRow = document.createElement('tr');
+    hRow.className = 'headerrow';
+    const cornerTh = document.createElement('th'); cornerTh.className='rownum'; cornerTh.textContent='1'; hRow.appendChild(cornerTh);
+    uriBatchState.headers.forEach(h=>{ const th=document.createElement('th'); th.textContent=h||'(blank)'; hRow.appendChild(th); });
+    thead.appendChild(hRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    const shown = uriBatchState.rows.slice(0, maxPreview);
+    shown.forEach((r,ri)=>{
+      const tr = document.createElement('tr');
+      const rn = document.createElement('td'); rn.className='rownum'; rn.textContent = ri+2;
+      tr.appendChild(rn);
+      r.forEach(c=>{ const td=document.createElement('td'); td.textContent = fmtCell(c); tr.appendChild(td); });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+
+    document.getElementById('uriGridPreviewSummary').textContent =
+      uriBatchState.rows.length > maxPreview
+        ? `View imported data as a grid (showing first ${maxPreview} of ${uriBatchState.rows.length.toLocaleString()} rows)`
+        : `View imported data as a grid (${uriBatchState.rows.length.toLocaleString()} rows)`;
+    uriUpdateGridHighlight();
+  }
+
+  function uriUpdateGridHighlight(){
+    const li = +document.getElementById('uriColLogin').value;
+    const pi = +document.getElementById('uriColPath').value;
+    document.querySelectorAll('#uriXgrid tbody tr').forEach(tr=>{
+      const cells = tr.children;
+      for(let i=1;i<cells.length;i++){
+        const colIdx = i-1;
+        cells[i].classList.toggle('mapped', colIdx===li || colIdx===pi);
+      }
+    });
+  }
+
+  document.getElementById('uriBatchGenerateBtn').addEventListener('click', uriGenerateBatch);
+
+  function uriGenerateBatch(){
+    const li = +document.getElementById('uriColLogin').value;
+    const pi = +document.getElementById('uriColPath').value;
+
+    if(li === pi){
+      showMsg('uriBatchMsg','warn','Login Code and Safe page path must be different columns.');
+      return;
+    }
+
+    let added = 0, skippedBlank = 0, skippedBadPath = 0;
+    const newEntries = [];
+
+    uriBatchState.rows.forEach(r=>{
+      const loginCode = String(r[li]).trim();
+      const safePathRaw = String(r[pi]).trim();
+
+      if(!loginCode || !safePathRaw){ skippedBlank++; return; }
+
+      const safePath = slugify(safePathRaw);
+      if(!safePath){ skippedBadPath++; return; }
+
+      const lpUrl = `/${loginCode}-${safePath}`;
+      const strippedCode = loginCode.replace(/^ibc22/i, '');
+      const safeUrl = `/${safePath}-${strippedCode}`;
+
+      newEntries.push({
+        id: 'u'+Date.now()+Math.random().toString(36).slice(2,7),
+        loginCode, safePath, lpUrl, safeUrl
+      });
+      added++;
+    });
+
+    if(!added){
+      showMsg('uriBatchMsg','warn','Nothing to generate — every row was missing a login code or a usable safe page path.');
+      return;
+    }
+
+    uriEntries = [...newEntries, ...uriEntries];
+    renderUriList();
+
+    let note = `Generated ${added.toLocaleString()} pair${added===1?'':'s'} from the file. `;
+    if(skippedBlank) note += `${skippedBlank.toLocaleString()} row(s) skipped for a blank login code or path. `;
+    if(skippedBadPath) note += `${skippedBadPath.toLocaleString()} row(s) skipped — safe page path had no letters or numbers.`;
+    showMsg('uriBatchMsg','ok', note);
+    document.getElementById('uriListWrap').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function copyToClipboard(text, btn){
+    const done = ()=>{
+      const original = btn.textContent;
+      btn.textContent = 'Copied';
+      btn.classList.add('copied');
+      setTimeout(()=>{ btn.textContent = original; btn.classList.remove('copied'); }, 1200);
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text, done));
+    } else {
+      fallbackCopy(text, done);
+    }
+  }
+  function fallbackCopy(text, done){
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); }catch(e){}
+    document.body.removeChild(ta);
+    done();
+  }
+
+  function slugify(s){
+    return String(s)
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function escapeAttr(s){ return escapeHtml(s); }
+
+})();
+</script>
+</body>
+</html>
